@@ -5,7 +5,7 @@ defmodule PhxComponentHelpers.MixProject do
     [
       app: :phx_component_helpers,
       version: "0.1.0",
-      elixir: "~> 1.11",
+      elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
@@ -36,7 +36,7 @@ defmodule PhxComponentHelpers.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:phoenix_html, "~> 2.14"},
+      {:phoenix_html, ">= 2.0.0"},
       {:jason, "~> 1.0", optional: true},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
