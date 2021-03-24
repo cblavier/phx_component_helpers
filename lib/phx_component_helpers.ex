@@ -80,7 +80,7 @@ defmodule PhxComponentHelpers do
   end
 
   @doc ~S"""
-  Extends assigns with phx_* attributes that can be interpolated within
+  Extends assigns with phx* attributes that can be interpolated within
   your component markup. It will automatically detect any attribute prefixed by
   `phx_` from input assigns.
 
@@ -125,7 +125,8 @@ defmodule PhxComponentHelpers do
   ```
 
   `assigns` now contains `@html_class` and `@html_wrapper_class`.
-  If your input assigns were `%{class: "mt-2", wrapper_class: "divide-none"}` then
+
+  If your input assigns were `%{class: "mt-2", wrapper_class: "divide-none"}` then:
     * `@html_class` would contain `"bg-blue-500 mt-2"`
     * `@html_wrapper_class` would contain `"py-4 px-2 divide-none"`
   """
