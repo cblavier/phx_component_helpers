@@ -13,7 +13,7 @@ jobs:
 
     env:
       MIX_ENV: test
-      CODECOV_TOKEN: 8eecd4f7-e737-41f2-9e83-2ed4ff5af249
+      CODECOV_TOKEN: 02497079-7449-406d-bd90-7d1aa6a95c8f
 
     steps:
       - uses: actions/checkout@v2
