@@ -129,5 +129,24 @@ defmodule PhxComponentHelpersTest do
   end
 
   describe "extend_class" do
+    test "without class keeps the default class attribute" do
+      assigns = %{c: "foo", bar: "bar"}
+      new_assigns = Helpers.extend_class(assigns, "bg-blue-500 mt-8")
+      assert new_assigns == Map.put(assigns, :html_class, {:safe, "class=\"mt-8 bg-blue-500\""})
+    end
+
+    test "with class extends the default class attribute" do
+      assigns = %{class: "mt-2"}
+      new_assigns = Helpers.extend_class(assigns, "bg-blue-500 mt-8 ")
+      assert new_assigns == Map.put(assigns, :html_class, {:safe, "class=\"bg-blue-500 mt-2\""})
+    end
+
+    test "can extend other class attribute" do
+      assigns = %{wrapper_class: "mt-2"}
+      new_assigns = Helpers.extend_class(assigns, :wrapper_class, "bg-blue-500 mt-8 ")
+
+      assert new_assigns ==
+               Map.put(assigns, :html_wrapper_class, {:safe, "class=\"bg-blue-500 mt-2\""})
+    end
   end
 end
