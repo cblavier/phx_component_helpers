@@ -56,14 +56,21 @@ You can then use your components like these.
   = live_component @socket, Button, type: "submit", phx_click: "btn-click", label: "Save"
 ```
 
+## Documentation
+
+Available on [https://hexdocs.pm/phx_component_helpers].
+
 ## Installation
 
-Add the following to you `mix.exs`
+Add the following to your `mix.exs`.
+
 
 ```elixir
 def deps do
   [
-    {:phx_component_helpers, "~> 0.1.0"}
+    {:phx_component_helpers, "~> 0.1.0"},
+    {:jason, "~> 1.0"} # only required if you want to use json encoding options
   ]
 end
 ```
+

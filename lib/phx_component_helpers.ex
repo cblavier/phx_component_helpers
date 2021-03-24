@@ -41,9 +41,11 @@ defmodule PhxComponentHelpers do
     * `:json` - when true, will JSON encode the assign value
 
   ## Example
-    assigns
-    |> set_component_attributes([:id, :name, :label], required: [:id, :name])
-    |> set_component_attributes([:value], json: true)
+  ```
+  assigns
+  |> set_component_attributes([:id, :name, :label], required: [:id, :name])
+  |> set_component_attributes([:value], json: true)
+  ```
 
   `assigns` now contains `@html_id`, `@html_name`, `@html_label` and `@html_value`.
   """
@@ -62,9 +64,11 @@ defmodule PhxComponentHelpers do
   assigns contain data-attributes markup.
 
   ## Example
-    assigns
-    |> set_data_attributes([:key, :text], required: [:key])
-    |> set_data_attributes([:document], json: true)
+  ```
+  assigns
+  |> set_data_attributes([:key, :text], required: [:key])
+  |> set_data_attributes([:document], json: true)
+  ```
 
   `assigns` now contains `@html_key`, `@html_text` and `@html_document`.
   """
@@ -88,8 +92,10 @@ defmodule PhxComponentHelpers do
     * `:required` - raises if required attributes are absent from assigns
 
   ## Example
-    assigns
-    |> set_phx_attributes([:phx_change, :phx_submit], required: [:phx_submit], init: [:phx_change])
+  ```
+  assigns
+  |> set_phx_attributes([:phx_change, :phx_submit], required: [:phx_submit], init: [:phx_change])
+  ```
 
   `assigns` now contains `@html_phx_change` and `@html_phx_submit`.
   """
@@ -112,9 +118,11 @@ defmodule PhxComponentHelpers do
     * `default_classes` - the css classed that will put by default
 
   ## Example
-    assigns
-    |> extend_class("bg-blue-500 mt-8")
-    |> extend_class(:wrapper_class, "py-4 px-2 divide-y-8 divide-gray-200")
+  ```
+  assigns
+  |> extend_class("bg-blue-500 mt-8")
+  |> extend_class(:wrapper_class, "py-4 px-2 divide-y-8 divide-gray-200")
+  ```
 
   `assigns` now contains `@html_class` and `@html_wrapper_class`.
   If your input assigns were `%{class: "mt-2", wrapper_class: "divide-none"}` then
