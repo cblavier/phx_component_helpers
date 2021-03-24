@@ -15,6 +15,8 @@ defmodule PhxComponentHelpers.MixProject do
         "coveralls.post": :test,
         "coveralls.html": :test
       ],
+      description: "Making development of Phoenix LiveView live_components easier.",
+      package: package(),
       name: "phx_component_helpers",
       source_url: "https://github.com/cblavier/phx_component_helpers",
       docs: [
@@ -39,6 +41,14 @@ defmodule PhxComponentHelpers.MixProject do
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
       {:ex_doc, "~> 0.24", only: :dev, runtime: false}
+    ]
+  end
+
+  defp package do
+    [
+      files: ~w(lib priv .formatter.exs mix.exs README* LICENSE* CHANGELOG*),
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/cblavier/phx_component_helpers"}
     ]
   end
 end
