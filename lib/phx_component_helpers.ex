@@ -2,7 +2,7 @@ defmodule PhxComponentHelpers do
   @moduledoc """
   `PhxComponentHelpers` are helper functions meant to be used within Phoenix
   LiveView live_components to make your components more configurable and extensible
-  from your templates
+  from your templates.
 
   It provides following features:
 
