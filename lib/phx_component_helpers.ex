@@ -1,4 +1,19 @@
 defmodule PhxComponentHelpers do
+  @moduledoc """
+  `PhxComponentHelpers` are helper functions meant to be used within Phoenix
+  LiveView live_components to make your components more configurable and extensible
+  from your templates
+
+  It provides following features:
+
+    * set html attributes from component assigns
+    * set data attributes from component assigns
+    * set phx_* attributes from component assigns
+    * encode attributes as JSON from an Elixir structure assign
+    * validate mandatory attributes
+    * set and extend css classes from component assigns
+  """
+
   import Phoenix.HTML, only: [html_escape: 1]
 
   @phx_attributes [
