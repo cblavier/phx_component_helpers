@@ -14,6 +14,12 @@ defmodule PhxComponentHelpers.MixProject do
         "coveralls.detail": :test,
         "coveralls.post": :test,
         "coveralls.html": :test
+      ],
+      name: "phx_component_helpers",
+      source_url: "https://github.com/cblavier/phx_component_helpers",
+      docs: [
+        main: "PhxComponentHelpers",
+        extras: ["README.md"]
       ]
     ]
   end
@@ -31,7 +37,8 @@ defmodule PhxComponentHelpers.MixProject do
       {:phoenix_html, "~> 2.14"},
       {:jason, "~> 1.0", optional: true},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:excoveralls, "~> 0.10", only: :test}
+      {:excoveralls, "~> 0.10", only: :test},
+      {:ex_doc, "~> 0.24", only: :dev, runtime: false}
     ]
   end
 end
