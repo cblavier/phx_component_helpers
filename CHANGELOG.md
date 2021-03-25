@@ -1,3 +1,8 @@
+# 0.4.0
+- `set_component_attributes/3` will set absent assigns by default
+- removed `:init` option from `set_component_attributes/3`
+- added `validate_required_attributes/2` 
+
 # 0.3.0
 - New `set_prefixed_attributes/3` function that can be used to map alpinejs attributes
 
