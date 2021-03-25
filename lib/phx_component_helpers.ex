@@ -15,16 +15,6 @@ defmodule PhxComponentHelpers do
   """
 
   import Phoenix.HTML, only: [html_escape: 1]
-
-  @phx_attributes [
-    :phx_target,
-    :phx_hook,
-    :phx_click,
-    :phx_change,
-    :phx_submit,
-    :phx_disable_with
-  ]
-
   @json_library Jason
 
   @doc ~S"""
@@ -100,8 +90,10 @@ defmodule PhxComponentHelpers do
   `assigns` now contains `@html_phx_change` and `@html_phx_submit`.
   """
   def set_phx_attributes(assigns, opts \\ []) do
+    phx_attributes = find_assigns_with_prefix(assigns, "phx_")
+
     assigns
-    |> set_attributes(@phx_attributes, &html_attribute/1)
+    |> set_attributes(phx_attributes, &html_attribute/1)
     |> set_empty_attributes(opts[:init])
     |> validate_required_attributes(opts[:required])
   end
@@ -200,5 +192,12 @@ defmodule PhxComponentHelpers do
   defp escaped(val, _) do
     {:safe, escaped_val} = html_escape(val)
     "\"#{escaped_val}\""
+  end
+
+  defp find_assigns_with_prefix(assigns, prefix) do
+    for key <- Map.keys(assigns),
+        key_s = to_string(key),
+        String.starts_with?(key_s, prefix),
+        do: key
   end
 end
