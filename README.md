@@ -5,18 +5,17 @@
 
 ## Presentation
 
-`PhxComponentHelpers` are helper functions meant to be used within Phoenix
-LiveView live_components to make your components more configurable and extensible
+`PhxComponentHelpers` are helper functions meant to be used within Phoenix LiveView live_components to make your components more configurable and extensible
 from your templates.
 
-It provides following features:
+It provides the following features:
 
-  * set html attributes from component assigns
-  * set data attributes from component assigns
-  * set phx_* attributes from component assigns
-  * encode attributes as JSON from an Elixir structure assign
-  * validate mandatory attributes
-  * set and extend css classes from component assigns
+ * set HTML attributes from component assigns
+ * set data attributes from component assigns
+ * set phx_* attributes from component assigns
+ * encode attributes as JSON from an Elixir structure assign
+ * validate mandatory attributes
+ * set and extend CSS classes from component assigns
 
 ## Example
 
@@ -63,9 +62,9 @@ From your templates, it's looking like this:
 
 ## Compared to Surface
 
-[Surface](https://github.com/surface-ui/surface) is a library built on the top of Phoenix LiveView and `live_components`. Surface is much more ambitious, heavier and complex than `PhxComponentHelpers` is (which obviously isn't a framework, just helpers ...).
+[Surface](https://github.com/surface-ui/surface) is a library built on the top of Phoenix LiveView and `live_components`. Surface is much more ambitious, heavier, and complex than `PhxComponentHelpers` is (which obviously isn't a framework, just helpers ...).
 
-`Surface` really changes the way you code user interfaces and components (you almost won't be using html templates anymore) whereas `PhxComponentHelpers` are just some sugar to helping you at using raw `phoenix_live_view`.
+`Surface` really changes the way you code user interfaces and components (you almost won't be using HTML templates anymore) whereas `PhxComponentHelpers` are just some sugar to help you using raw `phoenix_live_view`.
 
 
 ## Documentation
