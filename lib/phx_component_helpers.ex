@@ -187,11 +187,13 @@ defmodule PhxComponentHelpers do
   defp escaped(val, opts \\ [])
 
   defp escaped(val, json: true) do
-    if Code.ensure_compiled(@json_library) do
-      {:safe, escaped_val} = val |> @json_library.encode!() |> html_escape()
-      "\"#{escaped_val}\""
-    else
-      raise ArgumentError, "#{@json_library} is not available"
+    case Code.ensure_compiled(@json_library) do
+      {:module, mod} ->
+        {:safe, escaped_val} = val |> mod.encode!() |> html_escape()
+        "\"#{escaped_val}\""
+
+      _ ->
+        raise ArgumentError, "#{@json_library} is not available"
     end
   end
 
