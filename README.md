@@ -51,13 +51,16 @@ end
 From your templates, it's looking like this:
 
 ```elixir
-= live_component @socket, Form, id: "channel-form", phx_submit: "channel-form", class: "divide-none" do
-  = live_component @socket, InputGroup do
-    = live_component @socket, Label, for: "channel-name", label: "Channel name"
-    = live_component @socket, TextInput, name: "channel-name", value: @channel.name
+<%= live_component @socket, Form, id: "form", phx_submit: "form_submit", class: "divide-none" do %>
+  <%= live_component @socket, InputGroup do %>
+    <%= live_component @socket, Label, for: "name", label: "Name" %>
+    <%= live_component @socket, TextInput, name: "name", value: @my.name %>
+  <% end %>
     
-  = live_component @socket, ButtonGroup, class: "pt-2" do
-    = live_component @socket, Button, type: "submit", phx_click: "btn-click", label: "Save"
+  <%= live_component @socket, ButtonGroup, class: "pt-2" do %>
+    <%= live_component @socket, Button, type: "submit", phx_click: "btn-click", label: "Save" %>
+  <% end %>
+<% end %>
 ```
 
 ## Compared to Surface
