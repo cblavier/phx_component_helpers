@@ -15,6 +15,12 @@ defmodule PhxComponentHelpersTest do
       assert new_assigns == Map.put(assigns, :html_foo, {:safe, "foo=\"foo\""})
     end
 
+    test "absent assigns are set as empty html attributes" do
+      assigns = %{foo: "foo", bar: "bar"}
+      new_assigns = Helpers.set_component_attributes(assigns, [:baz])
+      assert new_assigns == Map.put(assigns, :html_baz, {:safe, ""})
+    end
+
     test "with known attributes and json opt, it sets the attribute as json" do
       assigns = %{foo: %{here: "some json"}, bar: "bar"}
       new_assigns = Helpers.set_component_attributes(assigns, [:foo], json: true)
@@ -25,12 +31,6 @@ defmodule PhxComponentHelpersTest do
                  :html_foo,
                  {:safe, "foo=\"{&quot;here&quot;:&quot;some json&quot;}\""}
                )
-    end
-
-    test "with init attributes it adds empty html attribute" do
-      assigns = %{foo: "foo", bar: "bar"}
-      new_assigns = Helpers.set_component_attributes(assigns, [], init: [:baz])
-      assert new_assigns == Map.put(assigns, :html_baz, {:safe, ""})
     end
 
     test "validates required attributes" do

@@ -26,7 +26,6 @@ defmodule PhxComponentHelpers do
     * `attributes` - a list of attributes (atoms) that will be fetched from assigns
 
   ## Options
-    * `:init` - a list of attributes that will be initialized if absent from assigns
     * `:required` - raises if required attributes are absent from assigns
     * `:json` - when true, will JSON encode the assign value
 
@@ -42,7 +41,6 @@ defmodule PhxComponentHelpers do
   def set_component_attributes(assigns, attributes, opts \\ []) do
     assigns
     |> set_attributes(attributes, &html_attribute/1, opts)
-    |> set_empty_attributes(opts[:init])
     |> validate_required_attributes(opts[:required])
   end
 
@@ -171,7 +169,7 @@ defmodule PhxComponentHelpers do
         attr_key = html_attribute_key(attr)
 
         case Map.get(assigns, attr) do
-          nil -> acc
+          nil -> Map.put(acc, attr_key, {:safe, ""})
           val -> Map.put(acc, attr_key, {:safe, "#{attribute_fun.(attr)}=#{escaped(val, opts)}"})
         end
     end
