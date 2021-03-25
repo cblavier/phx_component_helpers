@@ -13,6 +13,7 @@ It provides the following features:
  * set HTML attributes from component assigns
  * set data attributes from component assigns
  * set phx_* attributes from component assigns
+ * set attributes with any custom prefix such as `@click` or `x-bind:` from [alpinejs](https://github.com/alpinejs/alpine)
  * encode attributes as JSON from an Elixir structure assign
  * validate mandatory attributes
  * set and extend CSS classes from component assigns
