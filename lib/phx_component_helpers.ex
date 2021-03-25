@@ -200,7 +200,9 @@ defmodule PhxComponentHelpers do
   defp html_attribute(attr), do: attr |> to_string() |> String.replace("_", "-")
   defp data_attribute(attr), do: "data-#{html_attribute(attr)}"
 
-  def html_attribute_key(attr), do: "html_#{attr}" |> String.replace("@", "") |> String.to_atom()
+  defp html_attribute_key(attr) do
+    "html_#{attr}" |> String.replace("@", "") |> String.to_atom()
+  end
 
   defp escaped(val, opts \\ [])
 
