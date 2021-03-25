@@ -94,13 +94,53 @@ defmodule PhxComponentHelpersTest do
     end
   end
 
-  describe "set_phx_attributes" do
+  describe "set_prefixed_attributes" do
     test "without phx assigns it let the assigns unchanged" do
       assigns = %{foo: "foo", bar: "bar"}
-      new_assigns = Helpers.set_phx_attributes(assigns)
+      new_assigns = Helpers.set_prefixed_attributes(assigns, [])
       assert new_assigns == assigns
     end
 
+    test "with alpinejs assigns it adds the html phx-attribute" do
+      assigns = %{"@click" => "open = true", "x-bind:class" => "open", foo: "foo"}
+      new_assigns = Helpers.set_prefixed_attributes(assigns, ["@click", "x-bind:"])
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:html_click, {:safe, "@click=\"open = true\""})
+               |> Map.put(:"html_x-bind:class", {:safe, "x-bind:class=\"open\""})
+    end
+
+    test "with init attributes it adds empty html attribute" do
+      assigns = %{foo: "foo", bar: "bar"}
+
+      new_assigns =
+        Helpers.set_prefixed_attributes(assigns, ["@click", "x-bind:"], init: ["@click.away"])
+
+      assert new_assigns == assigns |> Map.put(:"html_click.away", {:safe, ""})
+    end
+
+    test "validates required attributes" do
+      assigns = %{"@click.away" => "open = false"}
+
+      new_assigns =
+        Helpers.set_prefixed_attributes(assigns, ["@click", "x-bind:"], required: ["@click.away"])
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:"html_click.away", {:safe, "@click.away=\"open = false\""})
+    end
+
+    test "with missing required attributes" do
+      assigns = %{foo: "foo", bar: "bar"}
+
+      assert_raise ArgumentError, fn ->
+        Helpers.set_prefixed_attributes(assigns, ["@click", "x-bind:"], required: ["@click.away"])
+      end
+    end
+  end
+
+  describe "set_phx_attributes" do
     test "with phx assigns it adds the html phx-attribute" do
       assigns = %{phx_change: "foo", bar: "bar"}
       new_assigns = Helpers.set_phx_attributes(assigns)

@@ -70,12 +70,15 @@ defmodule PhxComponentHelpers do
   end
 
   @doc ~S"""
-  Extends assigns with phx* attributes that can be interpolated within
+  Extends assigns with prefixed attributes that can be interpolated within
   your component markup. It will automatically detect any attribute prefixed by
-  `phx_` from input assigns.
+  any of the given prefixes from input assigns.
+
+  Can be used for intance to easily map `alpinejs` html attributes.
 
   ## Parameters
     * `assigns` - your component assigns
+    * `prefixes` - a list of prefix as binaries
 
   ## Options
     * `:init` - a list of attributes that will be initialized if absent from assigns
@@ -84,18 +87,37 @@ defmodule PhxComponentHelpers do
   ## Example
   ```
   assigns
-  |> set_phx_attributes([:phx_change, :phx_submit], required: [:phx_submit], init: [:phx_change])
+  |> set_prefixed_attributes(["@click", "x-bind:"], required: ["x-bind:class"])
   ```
 
-  `assigns` now contains `@html_phx_change` and `@html_phx_submit`.
+  `assigns` now contains `@html_click` and `@html_x-bind:class`.
   """
-  def set_phx_attributes(assigns, opts \\ []) do
-    phx_attributes = find_assigns_with_prefix(assigns, "phx_")
+  def set_prefixed_attributes(assigns, prefixes, opts \\ []) do
+    phx_attributes =
+      prefixes
+      |> Enum.flat_map(&find_assigns_with_prefix(assigns, &1))
+      |> Enum.uniq()
 
     assigns
     |> set_attributes(phx_attributes, &html_attribute/1)
     |> set_empty_attributes(opts[:init])
     |> validate_required_attributes(opts[:required])
+  end
+
+  @doc ~S"""
+  Just a convenient method built on top of `set_prefixed_attributes/3` for phx_* attributes.
+  It will automatically detect any attribute prefixed by `phx_` from input assigns.
+
+  ## Example
+  ```
+  assigns
+  |> set_phx_attributes(required: [:phx_submit], init: [:phx_change])
+  ```
+
+  `assigns` now contains `@html_phx_change` and `@html_phx_submit`.
+  """
+  def set_phx_attributes(assigns, opts \\ []) do
+    set_prefixed_attributes(assigns, ["phx_"], opts)
   end
 
   @doc ~S"""
@@ -146,11 +168,11 @@ defmodule PhxComponentHelpers do
   defp set_attributes(assigns, attributes, attribute_fun, opts \\ []) do
     for attr <- attributes, reduce: assigns do
       acc ->
-        html_attr = :"html_#{attr}"
+        attr_key = html_attribute_key(attr)
 
         case Map.get(assigns, attr) do
           nil -> acc
-          val -> Map.put(acc, html_attr, {:safe, "#{attribute_fun.(attr)}=#{escaped(val, opts)}"})
+          val -> Map.put(acc, attr_key, {:safe, "#{attribute_fun.(attr)}=#{escaped(val, opts)}"})
         end
     end
   end
@@ -159,7 +181,9 @@ defmodule PhxComponentHelpers do
 
   defp set_empty_attributes(assigns, attributes) do
     for attr <- attributes, reduce: assigns do
-      acc -> Map.put_new(acc, :"html_#{attr}", {:safe, ""})
+      acc ->
+        attr_key = html_attribute_key(attr)
+        Map.put_new(acc, attr_key, {:safe, ""})
     end
   end
 
@@ -175,6 +199,8 @@ defmodule PhxComponentHelpers do
 
   defp html_attribute(attr), do: attr |> to_string() |> String.replace("_", "-")
   defp data_attribute(attr), do: "data-#{html_attribute(attr)}"
+
+  def html_attribute_key(attr), do: "html_#{attr}" |> String.replace("@", "") |> String.to_atom()
 
   defp escaped(val, opts \\ [])
 
