@@ -119,6 +119,27 @@ defmodule PhxComponentHelpers do
   end
 
   @doc ~S"""
+  Validates that attributes are present in assigns.
+  Raises an `ArgumentError` if any attribute is missing.
+
+  ## Example
+  ```
+  assigns
+  |> validate_required_attributes([:id, :label])
+  ```
+  """
+  def validate_required_attributes(assigns, required)
+  def validate_required_attributes(assigns, nil), do: assigns
+
+  def validate_required_attributes(assigns, required) do
+    if Enum.all?(required, &Map.has_key?(assigns, &1)) do
+      assigns
+    else
+      raise ArgumentError, "missing required attributes"
+    end
+  end
+
+  @doc ~S"""
   Extends assigns with class attributes.
 
   The class attribute will take provided `default_classes` as a default value and will
@@ -182,16 +203,6 @@ defmodule PhxComponentHelpers do
       acc ->
         attr_key = html_attribute_key(attr)
         Map.put_new(acc, attr_key, {:safe, ""})
-    end
-  end
-
-  defp validate_required_attributes(assigns, nil), do: assigns
-
-  defp validate_required_attributes(assigns, required) do
-    if Enum.all?(required, &Map.has_key?(assigns, &1)) do
-      assigns
-    else
-      raise ArgumentError, "missing required attributes"
     end
   end
 

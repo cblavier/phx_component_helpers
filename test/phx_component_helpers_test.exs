@@ -168,6 +168,22 @@ defmodule PhxComponentHelpersTest do
     end
   end
 
+  describe "validate_required_attributes" do
+    test "validates required attributes" do
+      assigns = %{phx_click: "click"}
+      new_assigns = Helpers.validate_required_attributes(assigns, [:phx_click])
+      assert new_assigns == assigns
+    end
+
+    test "with missing required attributes" do
+      assigns = %{foo: "foo", bar: "bar"}
+
+      assert_raise ArgumentError, fn ->
+        Helpers.validate_required_attributes(assigns, [:phx_click])
+      end
+    end
+  end
+
   describe "extend_class" do
     test "without class keeps the default class attribute" do
       assigns = %{c: "foo", bar: "bar"}
