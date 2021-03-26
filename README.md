@@ -2,11 +2,11 @@
 
 [![github](https://github.com/cblavier/phx_component_helpers/actions/workflows/elixir.yml/badge.svg)](https://github.com/cblavier/phx_component_helpers/actions/workflows/elixir.yml)
 [![codecov](https://codecov.io/gh/cblavier/phx_component_helpers/branch/main/graph/badge.svg)](https://codecov.io/gh/cblavier/phx_component_helpers)
+[![Hex pm](http://img.shields.io/hexpm/v/phx_component_helpers.svg?style=flat)](https://hex.pm/packages/phx_component_helpers)
 
 ## Presentation
 
-`PhxComponentHelpers` are helper functions meant to be used within Phoenix LiveView live_components to make your components more configurable and extensible
-from your templates.
+`PhxComponentHelpers` are helper functions meant to be used within Phoenix LiveView live_components to make your components more configurable and extensible from templates.
 
 It provides the following features:
 
@@ -49,7 +49,7 @@ defmodule Forms.Button do
 end
 ```
 
-From your templates, it's looking like this:
+From templates, it's looking like this:
 
 ```elixir
 <%= live_component @socket, Form, id: "form", phx_submit: "form_submit", class: "divide-none" do %>
@@ -78,7 +78,6 @@ Available on [https://hexdocs.pm](https://hexdocs.pm/phx_component_helpers)
 ## Installation
 
 Add the following to your `mix.exs`.
-
 
 ```elixir
 def deps do
