@@ -41,7 +41,7 @@ defmodule Forms.Button do
 
   def render(assigns) do
     ~L"""
-    <button <%= @html_id %> <%= @html_type %> <%= @html_phx_attributes %> <%= @html_class %>>
+    <button <%= @raw_id %> <%= @raw_type %> <%= @raw_phx_attributes %> <%= @raw_class %>>
       <%= @label %>
     </button>
     """
@@ -94,7 +94,7 @@ defmodule Forms.Button do
 
   def render(assigns) do
     ~L"""
-    <button type="button" <%= @html_class %> <%= @html_ alpine_attributes %> <%= @html_phx_attributes%>>
+    <button type="button" <%= @raw_class %> <%= @raw_alpine_attributes %> <%= @raw_phx_attributes%>>
       <%= render_block(@inner_block) %>
     </button>
     """

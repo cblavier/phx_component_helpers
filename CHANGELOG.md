@@ -1,4 +1,5 @@
 # 0.5.0
+- all assigns are no longer prefixed by `html_` but by `raw_`
 - new `:into` option is 
 - `set_phx_attributes/2` has a default `:into` option
 - `extend_class/2` changes its signature to also use `into`

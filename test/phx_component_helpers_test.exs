@@ -9,16 +9,16 @@ defmodule PhxComponentHelpersTest do
       assert new_assigns == assigns
     end
 
-    test "with known attributes it sets the raw html attribute" do
+    test "with known attributes it sets the raw attribute" do
       assigns = %{foo: "foo", bar: "bar"}
       new_assigns = Helpers.set_component_attributes(assigns, [:foo])
-      assert new_assigns == Map.put(assigns, :html_foo, {:safe, "foo=\"foo\""})
+      assert new_assigns == Map.put(assigns, :raw_foo, {:safe, "foo=\"foo\""})
     end
 
-    test "absent assigns are set as empty html attributes" do
+    test "absent assigns are set as empty attributes" do
       assigns = %{foo: "foo", bar: "bar"}
       new_assigns = Helpers.set_component_attributes(assigns, [:baz])
-      assert new_assigns == Map.put(assigns, :html_baz, {:safe, ""})
+      assert new_assigns == Map.put(assigns, :raw_baz, {:safe, ""})
     end
 
     test "with known attributes and json opt, it sets the attribute as json" do
@@ -28,7 +28,7 @@ defmodule PhxComponentHelpersTest do
       assert new_assigns ==
                Map.put(
                  assigns,
-                 :html_foo,
+                 :raw_foo,
                  {:safe, "foo=\"{&quot;here&quot;:&quot;some json&quot;}\""}
                )
     end
@@ -53,9 +53,9 @@ defmodule PhxComponentHelpersTest do
 
       assert new_assigns ==
                assigns
-               |> Map.put(:html_foo, {:safe, "foo=\"foo\""})
-               |> Map.put(:html_bar, {:safe, "bar=\"bar\""})
-               |> Map.put(:html_attributes, {:safe, "bar=\"bar\" foo=\"foo\""})
+               |> Map.put(:raw_foo, {:safe, "foo=\"foo\""})
+               |> Map.put(:raw_bar, {:safe, "bar=\"bar\""})
+               |> Map.put(:raw_attributes, {:safe, "bar=\"bar\" foo=\"foo\""})
     end
   end
 
@@ -66,10 +66,10 @@ defmodule PhxComponentHelpersTest do
       assert new_assigns == assigns
     end
 
-    test "with known attributes it sets the raw html attribute" do
+    test "with known attributes it sets the raw attribute" do
       assigns = %{foo: "foo", bar: "bar"}
       new_assigns = Helpers.set_data_attributes(assigns, [:foo])
-      assert new_assigns == Map.put(assigns, :html_foo, {:safe, "data-foo=\"foo\""})
+      assert new_assigns == Map.put(assigns, :raw_foo, {:safe, "data-foo=\"foo\""})
     end
 
     test "with known attributes and json opt, it sets the attribute as json" do
@@ -79,15 +79,15 @@ defmodule PhxComponentHelpersTest do
       assert new_assigns ==
                Map.put(
                  assigns,
-                 :html_foo,
+                 :raw_foo,
                  {:safe, "data-foo=\"{&quot;here&quot;:&quot;some json&quot;}\""}
                )
     end
 
-    test "with init attributes it adds empty html attribute" do
+    test "with init attributes it adds empty attribute" do
       assigns = %{foo: "foo", bar: "bar"}
       new_assigns = Helpers.set_data_attributes(assigns, [], init: [:baz])
-      assert new_assigns == Map.put(assigns, :html_baz, {:safe, ""})
+      assert new_assigns == Map.put(assigns, :raw_baz, {:safe, ""})
     end
 
     test "validates required attributes" do
@@ -112,23 +112,23 @@ defmodule PhxComponentHelpersTest do
       assert new_assigns == assigns
     end
 
-    test "with alpinejs assigns it adds the html phx-attribute" do
+    test "with alpinejs assigns it adds the raw attributes" do
       assigns = %{"@click" => "open = true", "x-bind:class" => "open", foo: "foo"}
       new_assigns = Helpers.set_prefixed_attributes(assigns, ["@click", "x-bind:"])
 
       assert new_assigns ==
                assigns
-               |> Map.put(:html_click, {:safe, "@click=\"open = true\""})
-               |> Map.put(:"html_x-bind:class", {:safe, "x-bind:class=\"open\""})
+               |> Map.put(:raw_click, {:safe, "@click=\"open = true\""})
+               |> Map.put(:"raw_x-bind:class", {:safe, "x-bind:class=\"open\""})
     end
 
-    test "with init attributes it adds empty html attribute" do
+    test "with init attributes it adds empty attribute" do
       assigns = %{foo: "foo", bar: "bar"}
 
       new_assigns =
         Helpers.set_prefixed_attributes(assigns, ["@click", "x-bind:"], init: ["@click.away"])
 
-      assert new_assigns == assigns |> Map.put(:"html_click.away", {:safe, ""})
+      assert new_assigns == assigns |> Map.put(:"raw_click.away", {:safe, ""})
     end
 
     test "validates required attributes" do
@@ -139,7 +139,7 @@ defmodule PhxComponentHelpersTest do
 
       assert new_assigns ==
                assigns
-               |> Map.put(:"html_click.away", {:safe, "@click.away=\"open = false\""})
+               |> Map.put(:"raw_click.away", {:safe, "@click.away=\"open = false\""})
     end
 
     test "with missing required attributes" do
@@ -152,27 +152,27 @@ defmodule PhxComponentHelpersTest do
   end
 
   describe "set_phx_attributes" do
-    test "with phx assigns it adds the html phx-attribute" do
+    test "with phx assigns it adds the phx-attribute" do
       assigns = %{phx_change: "foo", phx_click: "bar", baz: "baz"}
       new_assigns = Helpers.set_phx_attributes(assigns)
 
       assert new_assigns ==
                assigns
-               |> Map.put(:html_phx_change, {:safe, "phx-change=\"foo\""})
-               |> Map.put(:html_phx_click, {:safe, "phx-click=\"bar\""})
-               |> Map.put(:html_phx_attributes, {:safe, "phx-change=\"foo\" phx-click=\"bar\""})
+               |> Map.put(:raw_phx_change, {:safe, "phx-change=\"foo\""})
+               |> Map.put(:raw_phx_click, {:safe, "phx-click=\"bar\""})
+               |> Map.put(:raw_phx_attributes, {:safe, "phx-change=\"foo\" phx-click=\"bar\""})
     end
 
-    test "with init attributes it adds empty html attribute" do
+    test "with init attributes it adds empty attribute" do
       assigns = %{foo: "foo", bar: "bar"}
       new_assigns = Helpers.set_phx_attributes(assigns, init: [:phx_submit], into: nil)
-      assert new_assigns == Map.put(assigns, :html_phx_submit, {:safe, ""})
+      assert new_assigns == Map.put(assigns, :raw_phx_submit, {:safe, ""})
     end
 
     test "validates required attributes" do
       assigns = %{phx_click: "click"}
       new_assigns = Helpers.set_phx_attributes(assigns, required: [:phx_click], into: nil)
-      assert new_assigns == Map.put(assigns, :html_phx_click, {:safe, "phx-click=\"click\""})
+      assert new_assigns == Map.put(assigns, :raw_phx_click, {:safe, "phx-click=\"click\""})
     end
 
     test "with missing required attributes" do
@@ -204,13 +204,13 @@ defmodule PhxComponentHelpersTest do
     test "without class keeps the default class attribute" do
       assigns = %{c: "foo", bar: "bar"}
       new_assigns = Helpers.extend_class(assigns, "bg-blue-500 mt-8")
-      assert new_assigns == Map.put(assigns, :html_class, {:safe, "class=\"mt-8 bg-blue-500\""})
+      assert new_assigns == Map.put(assigns, :raw_class, {:safe, "class=\"mt-8 bg-blue-500\""})
     end
 
     test "with class extends the default class attribute" do
       assigns = %{class: "mt-2"}
       new_assigns = Helpers.extend_class(assigns, "bg-blue-500 mt-8 ")
-      assert new_assigns == Map.put(assigns, :html_class, {:safe, "class=\"bg-blue-500 mt-2\""})
+      assert new_assigns == Map.put(assigns, :raw_class, {:safe, "class=\"bg-blue-500 mt-2\""})
     end
 
     test "can extend other class attribute" do
@@ -218,7 +218,7 @@ defmodule PhxComponentHelpersTest do
       new_assigns = Helpers.extend_class(assigns, "bg-blue-500 mt-8 ", into: :wrapper_class)
 
       assert new_assigns ==
-               Map.put(assigns, :html_wrapper_class, {:safe, "class=\"bg-blue-500 mt-2\""})
+               Map.put(assigns, :raw_wrapper_class, {:safe, "class=\"bg-blue-500 mt-2\""})
     end
   end
 end

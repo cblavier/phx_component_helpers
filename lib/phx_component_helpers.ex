@@ -19,7 +19,7 @@ defmodule PhxComponentHelpers do
   @json_library Jason
 
   @doc ~S"""
-  Extends assigns with html_* attributes that can be interpolated within
+  Extends assigns with raw_* attributes that can be interpolated within
   your component markup.
 
   ## Parameters
@@ -38,20 +38,20 @@ defmodule PhxComponentHelpers do
   |> set_component_attributes([:value], json: true)
   ```
 
-  `assigns` now contains `@html_id`, `@html_name`, `@html_label` and `@html_value`.
-  It also contains `@html_attributes` which holds the values if `:id`, `:name` and `:label`.
+  `assigns` now contains `@raw_id`, `@raw_name`, `@raw_label` and `@raw_value`.
+  It also contains `@raw_attributes` which holds the values if `:id`, `:name` and `:label`.
   """
   def set_component_attributes(assigns, attributes, opts \\ []) do
     assigns
-    |> set_attributes(attributes, &html_attribute/1, opts)
+    |> set_attributes(attributes, &raw_attribute/1, opts)
     |> validate_required_attributes(opts[:required])
   end
 
   @doc ~S"""
-  Extends assigns with html_* data-attributes that can be interpolated within
+  Extends assigns with raw_* data-attributes that can be interpolated within
   your component markup.
 
-  Behaves exactly like `set_component_attributes/3` excepted the output `@html_attr`
+  Behaves exactly like `set_component_attributes/3` excepted the output `@raw_attr`
   assigns contain data-attributes markup.
 
   ## Example
@@ -61,7 +61,7 @@ defmodule PhxComponentHelpers do
   |> set_data_attributes([:document], json: true)
   ```
 
-  `assigns` now contains `@html_key`, `@html_text` and `@html_document`.
+  `assigns` now contains `@raw_key`, `@raw_text` and `@raw_document`.
   """
   def set_data_attributes(assigns, attributes, opts \\ []) do
     assigns
@@ -96,7 +96,7 @@ defmodule PhxComponentHelpers do
     )
   ```
 
-  `assigns` now contains `@html_click`, `@html_x-bind:class` and `@html_alpine_attributes`.
+  `assigns` now contains `@raw_click`, `@raw_x-bind:class` and `@raw_alpine_attributes`.
   """
   def set_prefixed_attributes(assigns, prefixes, opts \\ []) do
     phx_attributes =
@@ -105,7 +105,7 @@ defmodule PhxComponentHelpers do
       |> Enum.uniq()
 
     assigns
-    |> set_attributes(phx_attributes, &html_attribute/1, opts)
+    |> set_attributes(phx_attributes, &raw_attribute/1, opts)
     |> set_empty_attributes(opts[:init])
     |> validate_required_attributes(opts[:required])
   end
@@ -121,7 +121,7 @@ defmodule PhxComponentHelpers do
   |> set_phx_attributes(required: [:phx_submit], init: [:phx_change])
   ```
 
-  `assigns` now contains `@html_phx_change`, `@html_phx_submit` and `@html_phx_attributes`.
+  `assigns` now contains `@raw_phx_change`, `@raw_phx_submit` and `@raw_phx_attributes`.
   """
   def set_phx_attributes(assigns, opts \\ []) do
     opts = Keyword.put_new(opts, :into, :phx_attributes)
@@ -169,11 +169,11 @@ defmodule PhxComponentHelpers do
   |> extend_class("py-4 px-2 divide-y-8 divide-gray-200", into: :wrapper_class)
   ```
 
-  `assigns` now contains `@html_class` and `@html_wrapper_class`.
+  `assigns` now contains `@raw_class` and `@raw_wrapper_class`.
 
   If your input assigns were `%{class: "mt-2", wrapper_class: "divide-none"}` then:
-    * `@html_class` would contain `"bg-blue-500 mt-2"`
-    * `@html_wrapper_class` would contain `"py-4 px-2 divide-none"`
+    * `@raw_class` would contain `"bg-blue-500 mt-2"`
+    * `@raw_wrapper_class` would contain `"py-4 px-2 divide-none"`
   """
   def extend_class(assigns, default_classes, opts \\ []) do
     class_attribute_name = Keyword.get(opts, :into, :class)
@@ -193,15 +193,15 @@ defmodule PhxComponentHelpers do
           end
       end
 
-    html_class = class |> Enum.join(" ") |> escaped()
-    Map.put(assigns, :"html_#{class_attribute_name}", {:safe, "class=#{html_class}"})
+    raw_class = class |> Enum.join(" ") |> escaped()
+    Map.put(assigns, :"raw_#{class_attribute_name}", {:safe, "class=#{raw_class}"})
   end
 
   defp set_attributes(assigns, attributes, attribute_fun, opts) do
     new_assigns =
       attributes
       |> Enum.reduce(%{}, fn attr, acc ->
-        attr_key = html_attribute_key(attr)
+        attr_key = raw_attribute_key(attr)
 
         case Map.get(assigns, attr) do
           nil -> Map.put(acc, attr_key, {:safe, ""})
@@ -217,7 +217,7 @@ defmodule PhxComponentHelpers do
 
   defp handle_into_option(assigns, into) do
     into_assign = for({_key, {:safe, attr}} <- assigns, do: attr)
-    attr_key = html_attribute_key(into)
+    attr_key = raw_attribute_key(into)
     Map.put(assigns, attr_key, {:safe, Enum.join(into_assign, " ")})
   end
 
@@ -226,16 +226,16 @@ defmodule PhxComponentHelpers do
   defp set_empty_attributes(assigns, attributes) do
     for attr <- attributes, reduce: assigns do
       acc ->
-        attr_key = html_attribute_key(attr)
+        attr_key = raw_attribute_key(attr)
         Map.put_new(acc, attr_key, {:safe, ""})
     end
   end
 
-  defp html_attribute(attr), do: attr |> to_string() |> String.replace("_", "-")
-  defp data_attribute(attr), do: "data-#{html_attribute(attr)}"
+  defp raw_attribute(attr), do: attr |> to_string() |> String.replace("_", "-")
+  defp data_attribute(attr), do: "data-#{raw_attribute(attr)}"
 
-  defp html_attribute_key(attr) do
-    "html_#{attr}" |> String.replace("@", "") |> String.to_atom()
+  defp raw_attribute_key(attr) do
+    "raw_#{attr}" |> String.replace("@", "") |> String.to_atom()
   end
 
   defp escaped(val, opts \\ [])
