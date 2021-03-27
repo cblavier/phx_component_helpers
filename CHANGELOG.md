@@ -1,3 +1,8 @@
+# 0.5.0
+- new `:into` option is 
+- `set_phx_attributes/2` has a default `:into` option
+- `extend_class/2` changes its signature to also use `into`
+
 # 0.4.0
 - `set_component_attributes/3` will set absent assigns by default
 - removed `:init` option from `set_component_attributes/3`

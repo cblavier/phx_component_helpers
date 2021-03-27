@@ -157,14 +157,16 @@ defmodule PhxComponentHelpers do
 
   ## Parameters
     * `assigns` - your component assigns
-    * `class_attribute_name` - the class attribute you want to define, `:class` by default
     * `default_classes` - the css classed that will put by default
+
+  ## Options
+  * `:into` - put all css classes into this assign
 
   ## Example
   ```
   assigns
   |> extend_class("bg-blue-500 mt-8")
-  |> extend_class(:wrapper_class, "py-4 px-2 divide-y-8 divide-gray-200")
+  |> extend_class("py-4 px-2 divide-y-8 divide-gray-200", into: :wrapper_class)
   ```
 
   `assigns` now contains `@html_class` and `@html_wrapper_class`.
@@ -173,7 +175,8 @@ defmodule PhxComponentHelpers do
     * `@html_class` would contain `"bg-blue-500 mt-2"`
     * `@html_wrapper_class` would contain `"py-4 px-2 divide-none"`
   """
-  def extend_class(assigns, class_attribute_name \\ :class, default_classes) do
+  def extend_class(assigns, default_classes, opts \\ []) do
+    class_attribute_name = Keyword.get(opts, :into, :class)
     default_classes = String.split(default_classes, [" ", "\n"], trim: true)
     assigns_class = Map.get(assigns, class_attribute_name, "")
     extend_classes = String.split(assigns_class, [" ", "\n"], trim: true)
