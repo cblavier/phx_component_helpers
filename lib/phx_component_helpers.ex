@@ -15,6 +15,7 @@ defmodule PhxComponentHelpers do
   """
 
   import Phoenix.HTML, only: [html_escape: 1]
+
   @json_library Jason
 
   @doc ~S"""
@@ -28,15 +29,17 @@ defmodule PhxComponentHelpers do
   ## Options
     * `:required` - raises if required attributes are absent from assigns
     * `:json` - when true, will JSON encode the assign value
+    * `:into` - merges all assigns in a single one that can be interpolated at once
 
   ## Example
   ```
   assigns
-  |> set_component_attributes([:id, :name, :label], required: [:id, :name])
+  |> set_component_attributes([:id, :name, :label], required: [:id, :name], into: :attributes)
   |> set_component_attributes([:value], json: true)
   ```
 
   `assigns` now contains `@html_id`, `@html_name`, `@html_label` and `@html_value`.
+  It also contains `@html_attributes` which holds the values if `:id`, `:name` and `:label`.
   """
   def set_component_attributes(assigns, attributes, opts \\ []) do
     assigns
@@ -81,14 +84,19 @@ defmodule PhxComponentHelpers do
   ## Options
     * `:init` - a list of attributes that will be initialized if absent from assigns
     * `:required` - raises if required attributes are absent from assigns
+    * `:into` - merges all assigns in a single one that can be interpolated at once
 
   ## Example
   ```
   assigns
-  |> set_prefixed_attributes(["@click", "x-bind:"], required: ["x-bind:class"])
+  |> set_prefixed_attributes(
+      ["@click", "x-bind:"],
+      required: ["x-bind:class"],
+      into: :alpine_attributes
+    )
   ```
 
-  `assigns` now contains `@html_click` and `@html_x-bind:class`.
+  `assigns` now contains `@html_click`, `@html_x-bind:class` and `@html_alpine_attributes`.
   """
   def set_prefixed_attributes(assigns, prefixes, opts \\ []) do
     phx_attributes =
@@ -97,7 +105,7 @@ defmodule PhxComponentHelpers do
       |> Enum.uniq()
 
     assigns
-    |> set_attributes(phx_attributes, &html_attribute/1)
+    |> set_attributes(phx_attributes, &html_attribute/1, opts)
     |> set_empty_attributes(opts[:init])
     |> validate_required_attributes(opts[:required])
   end
@@ -105,6 +113,7 @@ defmodule PhxComponentHelpers do
   @doc ~S"""
   Just a convenient method built on top of `set_prefixed_attributes/3` for phx_* attributes.
   It will automatically detect any attribute prefixed by `phx_` from input assigns.
+  By default, the `:into` option of `set_prefixed_attributes/3` is `:phx_attributes`
 
   ## Example
   ```
@@ -112,9 +121,10 @@ defmodule PhxComponentHelpers do
   |> set_phx_attributes(required: [:phx_submit], init: [:phx_change])
   ```
 
-  `assigns` now contains `@html_phx_change` and `@html_phx_submit`.
+  `assigns` now contains `@html_phx_change`, `@html_phx_submit` and `@html_phx_attributes`.
   """
   def set_phx_attributes(assigns, opts \\ []) do
+    opts = Keyword.put_new(opts, :into, :phx_attributes)
     set_prefixed_attributes(assigns, ["phx_"], opts)
   end
 
@@ -184,16 +194,28 @@ defmodule PhxComponentHelpers do
     Map.put(assigns, :"html_#{class_attribute_name}", {:safe, "class=#{html_class}"})
   end
 
-  defp set_attributes(assigns, attributes, attribute_fun, opts \\ []) do
-    for attr <- attributes, reduce: assigns do
-      acc ->
+  defp set_attributes(assigns, attributes, attribute_fun, opts) do
+    new_assigns =
+      attributes
+      |> Enum.reduce(%{}, fn attr, acc ->
         attr_key = html_attribute_key(attr)
 
         case Map.get(assigns, attr) do
           nil -> Map.put(acc, attr_key, {:safe, ""})
           val -> Map.put(acc, attr_key, {:safe, "#{attribute_fun.(attr)}=#{escaped(val, opts)}"})
         end
-    end
+      end)
+      |> handle_into_option(opts[:into])
+
+    Map.merge(assigns, new_assigns)
+  end
+
+  defp handle_into_option(assigns, nil), do: assigns
+
+  defp handle_into_option(assigns, into) do
+    into_assign = for({_key, {:safe, attr}} <- assigns, do: attr)
+    attr_key = html_attribute_key(into)
+    Map.put(assigns, attr_key, {:safe, Enum.join(into_assign, " ")})
   end
 
   defp set_empty_attributes(assigns, nil), do: assigns

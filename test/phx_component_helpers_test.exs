@@ -46,6 +46,17 @@ defmodule PhxComponentHelpersTest do
         Helpers.set_component_attributes(assigns, [], required: [:baz])
       end
     end
+
+    test "with into option, it merges all in a single assign" do
+      assigns = %{foo: "foo", bar: "bar"}
+      new_assigns = Helpers.set_component_attributes(assigns, [:foo, :bar], into: :attributes)
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:html_foo, {:safe, "foo=\"foo\""})
+               |> Map.put(:html_bar, {:safe, "bar=\"bar\""})
+               |> Map.put(:html_attributes, {:safe, "bar=\"bar\" foo=\"foo\""})
+    end
   end
 
   describe "set_data_attributes" do
@@ -142,20 +153,25 @@ defmodule PhxComponentHelpersTest do
 
   describe "set_phx_attributes" do
     test "with phx assigns it adds the html phx-attribute" do
-      assigns = %{phx_change: "foo", bar: "bar"}
+      assigns = %{phx_change: "foo", phx_click: "bar", baz: "baz"}
       new_assigns = Helpers.set_phx_attributes(assigns)
-      assert new_assigns == Map.put(assigns, :html_phx_change, {:safe, "phx-change=\"foo\""})
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:html_phx_change, {:safe, "phx-change=\"foo\""})
+               |> Map.put(:html_phx_click, {:safe, "phx-click=\"bar\""})
+               |> Map.put(:html_phx_attributes, {:safe, "phx-change=\"foo\" phx-click=\"bar\""})
     end
 
     test "with init attributes it adds empty html attribute" do
       assigns = %{foo: "foo", bar: "bar"}
-      new_assigns = Helpers.set_phx_attributes(assigns, init: [:phx_submit])
+      new_assigns = Helpers.set_phx_attributes(assigns, init: [:phx_submit], into: nil)
       assert new_assigns == Map.put(assigns, :html_phx_submit, {:safe, ""})
     end
 
     test "validates required attributes" do
       assigns = %{phx_click: "click"}
-      new_assigns = Helpers.set_phx_attributes(assigns, required: [:phx_click])
+      new_assigns = Helpers.set_phx_attributes(assigns, required: [:phx_click], into: nil)
       assert new_assigns == Map.put(assigns, :html_phx_click, {:safe, "phx-click=\"click\""})
     end
 
