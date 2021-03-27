@@ -100,7 +100,11 @@ defmodule Forms.Button do
 
   def render(assigns) do
     ~L"""
-    <button type="button" <%= @raw_class %> <%= @raw_alpine_attributes %> <%= @raw_phx_attributes%>>
+    <button type="button"
+      <%= @raw_class %> 
+      <%= @raw_alpine_attributes %> 
+      <%= @raw_phx_attributes%>
+     >
       <%= render_block(@inner_block) %>
     </button>
     """
@@ -111,8 +115,8 @@ end
 Then in your `html.leex` template you can imagine the following code, providing `@click` behaviour and overriding just the few tailwind css classes you need (only `p-*`, `w-*` and `h-*` will be replaced). No `phx` behaviour here, but it's ok it won't break ;-)
 
 ```elixir
-<%= live_component @socket, ButtonComponent, class: "p-0 w-7 h-7", "@click": "$dispatch('closeslideover')" do %>
-  <%= live_component @socket, IconComponent, icon: :plus_circle %>
+<%= live_component @socket, Button, class: "p-0 w-7 h-7", "@click": "$dispatch('closeslideover')" do %>
+  <%= live_component @socket, Icon, icon: :plus_circle %>
 <% end %>
 ```
 
