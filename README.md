@@ -78,16 +78,22 @@ defmodule Forms.Button do
   use Phoenix.LiveComponent
   import PhxComponentHelpers
 
-  @css_class "inline-flex items-center justify-center p-3 w-5 h-5 border border-transparent text-2xl leading-4 font-medium rounded-md text-white bg-primary hover:bg-primary-hover"
+  @css_class "inline-flex items-center justify-center p-3 w-5 h-5 border \
+              border-transparent text-2xl leading-4 font-medium rounded-md \
+              text-white bg-primary hover:bg-primary-hover"
 
   def mount(socket), do: {:ok, socket}
 
   def update(assigns, socket) do
     assigns =
       assigns
-      |> set_phx_attributes()
-      |> set_prefixed_attributes(["@click", "x-bind:"], into: :alpine_attributes, required: "@click")
       |> extend_class(@css_class)
+      |> set_phx_attributes()
+      |> set_prefixed_attributes(
+        ["@click", "x-bind:"],
+        into: :alpine_attributes,
+        required: "@click"
+      )
 
     {:ok, assign(socket, assigns)}
   end
