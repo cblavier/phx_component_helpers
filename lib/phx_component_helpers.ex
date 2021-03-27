@@ -157,7 +157,7 @@ defmodule PhxComponentHelpers do
 
   ## Parameters
     * `assigns` - your component assigns
-    * `default_classes` - the css classed that will put by default
+    * `default_classes` - the default classes that will be overridden by your assigns.
 
   ## Options
   * `:into` - put all css classes into this assign
