@@ -33,7 +33,7 @@ defmodule Forms.Button do
     assigns =
       assigns
       |> extend_class("bg-blue-700 hover:bg-blue-900 ...")
-      |> set_component_attributes([:type, :id, :label], required: [:label])
+      |> set_component_attributes([:type, :id, :label], required: [:id])
       |> set_phx_attributes()
 
     {:ok, assign(socket, assigns)}
@@ -41,7 +41,7 @@ defmodule Forms.Button do
 
   def render(assigns) do
     ~L"""
-    <button <%= @html_id %> <%= @html_type %> <%= @html_phx_click %> <%= @html_class %>>
+    <button <%= @html_id %> <%= @html_type %> <%= @html_phx_attributes %> <%= @html_class %>>
       <%= @label %>
     </button>
     """
@@ -64,12 +64,57 @@ From templates, it's looking like this:
 <% end %>
 ```
 
+## With the PETAL stack
+
+[PETAL](https://thinkingelixir.com/petal-stack-in-elixir/) stands for Phoenix - Elixir - TailwindCSS - Alpine.js - LiveView. In recent months it became quite popular in the Elixir ecosystem and `PhxComponentHelpers` are meant to fit in.
+
+- [TailwindCSS](https://tailwindcss.com) provides a new way to structure CSS but keeping a good HTML hygien required to rely on a component oriented library.
+- [Alpine.js](https://github.com/alpinejs/alpine) is the Javascript counterpart of Tailwind. It let you define dynamic behaviour right from your templates with HTML attributes.
+
+The point of developping good components is to provide strong defaults in the component so that they can be used as-is. But also to let these defaults be overriden right from the templates.
+
+```elixir
+defmodule Forms.Button do
+  use Phoenix.LiveComponent
+  import PhxComponentHelpers
+
+  @css_class "inline-flex items-center justify-center p-3 w-5 h-5 border border-transparent text-2xl leading-4 font-medium rounded-md text-white bg-primary hover:bg-primary-hover"
+
+  def mount(socket), do: {:ok, socket}
+
+  def update(assigns, socket) do
+    assigns =
+      assigns
+      |> set_phx_attributes()
+      |> set_prefixed_attributes(["@click", "x-bind:"], into: :alpine_attributes, required: "@click")
+      |> extend_class(@css_class)
+
+    {:ok, assign(socket, assigns)}
+  end
+
+  def render(assigns) do
+    ~L"""
+    <button type="button" <%= @html_class %> <%= @html_ alpine_attributes %> <%= @html_phx_attributes%>>
+      <%= render_block(@inner_block) %>
+    </button>
+    """
+  end
+end
+```
+
+Then in your `html.leex` template you can imagine the following code, providing `@click` behaviour and overriding just the few tailwind css classes you need (only `p-*`, `w-*` and `h-*` will be replaced). No `phx` behaviour here, but it's ok it won't break ;-)
+
+```elixir
+<%= live_component @socket, ButtonComponent, class: "p-0 w-7 h-7", "@click": "$dispatch('closeslideover')" do %>
+  <%= live_component @socket, IconComponent, icon: :plus_circle %>
+<% end %>
+```
+
 ## Compared to Surface
 
 [Surface](https://github.com/surface-ui/surface) is a library built on the top of Phoenix LiveView and `live_components`. Surface is much more ambitious, heavier, and complex than `PhxComponentHelpers` is (which obviously isn't a framework, just helpers ...).
 
 `Surface` really changes the way you code user interfaces and components (you almost won't be using HTML templates anymore) whereas `PhxComponentHelpers` are just some sugar to help you using raw `phoenix_live_view`.
-
 
 ## Documentation
 
@@ -82,7 +127,7 @@ Add the following to your `mix.exs`.
 ```elixir
 def deps do
   [
-    {:phx_component_helpers, "~> 0.4.0"},
+    {:phx_component_helpers, "~> 0.5.0"},
     {:jason, "~> 1.0"} # only required if you want to use json encoding options
   ]
 end
