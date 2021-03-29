@@ -111,7 +111,7 @@ defmodule PhxComponentHelpers do
   end
 
   @doc ~S"""
-  Just a convenient method built on top of `set_prefixed_attributes/3` for phx_* attributes.
+  Just a convenient method built on top of `set_prefixed_attributes/3` for phx attributes.
   It will automatically detect any attribute prefixed by `phx_` from input assigns.
   By default, the `:into` option of `set_prefixed_attributes/3` is `:phx_attributes`
 
