@@ -4,7 +4,7 @@ defmodule PhxComponentHelpers.MixProject do
   def project do
     [
       app: :phx_component_helpers,
-      version: "0.5.0",
+      version: "0.6.0",
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -37,6 +37,7 @@ defmodule PhxComponentHelpers.MixProject do
   defp deps do
     [
       {:phoenix_html, ">= 2.0.0"},
+      {:phoenix_live_view, ">= 0.15.0", optional: true},
       {:jason, "~> 1.0", optional: true},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.10", only: :test},

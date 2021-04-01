@@ -1,3 +1,7 @@
+# 0.6.0
+- added `PhxViewHelpers` than can be used within templates
+- added `PhxComponentHelpers.set_form_attributes/3` to fetch `Phoenix.HTML.Form` data
+
 # 0.5.0
 - all assigns are no longer prefixed by `html_` but by `raw_`
 - new `:into` option is 

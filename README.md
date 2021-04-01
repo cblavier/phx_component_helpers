@@ -73,6 +73,8 @@ From templates, it's looking like this:
 
 The point of developping good components is to provide strong defaults in the component so that they can be used as-is. But also to let these defaults be overriden right from the templates.
 
+Here is the definition of a typical Form button, with `Tailwind` & `Alpine`:
+
 ```elixir
 defmodule Forms.Button do
   use Phoenix.LiveComponent
@@ -120,6 +122,31 @@ Then in your `html.leex` template you can imagine the following code, providing 
 <% end %>
 ```
 
+## Forms
+This library also provides `Phoenix.HTML.Form` related functions so you can easily write your own `my_form_for` function with your css defaults.
+
+```elixir
+def my_form_for(form_data, action, options) when is_list(options) do
+  new_options = extend_form_class(options, "mt-4 space-y-2")
+  form_for(form_data, action, new_options)
+end
+```
+
+Then you only needs to use `PhxComponentHelpers.set_form_attributes/3` within your own form LiveComponents in order to fetch names & values from the form. Your template will then look like this:
+
+```elixir
+<%= f = my_form_for @changeset, phx_submit: "form_submit", class: "divide-none" do %>
+  <%= live_component @socket, InputGroup do %>
+    <%= live_component @socket, Label, form: f, field: :name, label: "Name" %>
+    <%= live_component @socket, TextInput, form: f, field: :name  %>
+  <% end %>
+    
+  <%= live_component @socket, ButtonGroup, class: "pt-2" do %>
+    <%= live_component @socket, Button, type: "submit", label: "Save" %>
+  <% end %>
+<% end %>
+```
+
 ## Compared to Surface
 
 [Surface](https://github.com/surface-ui/surface) is a library built on the top of Phoenix LiveView and `live_components`. Surface is much more ambitious, heavier, and complex than `PhxComponentHelpers` is (which obviously isn't a framework, just helpers ...).
@@ -137,7 +164,7 @@ Add the following to your `mix.exs`.
 ```elixir
 def deps do
   [
-    {:phx_component_helpers, "~> 0.5.0"},
+    {:phx_component_helpers, "~> 0.6.0"},
     {:jason, "~> 1.0"} # only required if you want to use json encoding options
   ]
 end

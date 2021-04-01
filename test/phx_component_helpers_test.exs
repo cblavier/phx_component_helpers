@@ -1,6 +1,9 @@
 defmodule PhxComponentHelpersTest do
+  @moduledoc false
   use ExUnit.Case, async: true
   alias PhxComponentHelpers, as: Helpers
+
+  alias Phoenix.HTML.Form
 
   describe "set_component_attributes" do
     test "with unknown attributes it let the assigns unchanged" do
@@ -219,6 +222,48 @@ defmodule PhxComponentHelpersTest do
 
       assert new_assigns ==
                Map.put(assigns, :raw_wrapper_class, {:safe, "class=\"bg-blue-500 mt-2\""})
+    end
+  end
+
+  describe "set_form_attributes" do
+    test "without form keeps the input assigns" do
+      assigns = %{c: "foo", bar: "bar"}
+      new_assigns = Helpers.set_form_attributes(assigns)
+      assert new_assigns == assigns
+    end
+
+    test "with form, field and value, set the form assigns" do
+      assigns = %{
+        c: "foo",
+        form: %Form{data: %{my_field: "42"}},
+        field: :my_field
+      }
+
+      new_assigns = Helpers.set_form_attributes(assigns)
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:for, "my_field")
+               |> Map.put(:id, "my_field")
+               |> Map.put(:name, "my_field")
+               |> Map.put(:value, {:safe, "42"})
+    end
+
+    test "with form, field and without value, set the form assigns" do
+      assigns = %{
+        c: "foo",
+        form: %Form{data: %{}},
+        field: :my_field
+      }
+
+      new_assigns = Helpers.set_form_attributes(assigns)
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:for, "my_field")
+               |> Map.put(:id, "my_field")
+               |> Map.put(:name, "my_field")
+               |> Map.put(:value, nil)
     end
   end
 end

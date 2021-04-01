@@ -14,9 +14,10 @@ defmodule PhxComponentHelpers do
     * set and extend css classes from component assigns
   """
 
+  import PhxComponentHelpers.Attributes
+  import PhxComponentHelpers.CSS
   import Phoenix.HTML, only: [html_escape: 1]
-
-  @json_library Jason
+  import Phoenix.HTML.Form, only: [input_id: 2, input_name: 2, input_value: 2]
 
   @doc ~S"""
   Extends assigns with raw_* attributes that can be interpolated within
@@ -177,77 +178,39 @@ defmodule PhxComponentHelpers do
   """
   def extend_class(assigns, default_classes, opts \\ []) do
     class_attribute_name = Keyword.get(opts, :into, :class)
-    default_classes = String.split(default_classes, [" ", "\n"], trim: true)
-    assigns_class = Map.get(assigns, class_attribute_name, "")
-    extend_classes = String.split(assigns_class, [" ", "\n"], trim: true)
-
-    class =
-      for class <- default_classes, reduce: extend_classes do
-        acc ->
-          [class_prefix | _] = String.split(class, "-")
-
-          if Enum.any?(extend_classes, &String.starts_with?(&1, "#{class_prefix}-")) do
-            acc
-          else
-            [class | acc]
-          end
-      end
-
-    raw_class = class |> Enum.join(" ") |> escaped()
+    raw_class = assigns |> do_extend_class(default_classes, class_attribute_name) |> escaped()
     Map.put(assigns, :"raw_#{class_attribute_name}", {:safe, "class=#{raw_class}"})
   end
 
-  defp set_attributes(assigns, attributes, attribute_fun, opts) do
-    new_assigns =
-      attributes
-      |> Enum.reduce(%{}, fn attr, acc ->
-        attr_key = raw_attribute_key(attr)
+  @doc ~S"""
+  Extends assigns with form related attributes.
 
-        case Map.get(assigns, attr) do
-          nil -> Map.put(acc, attr_key, {:safe, ""})
-          val -> Map.put(acc, attr_key, {:safe, "#{attribute_fun.(attr)}=#{escaped(val, opts)}"})
-        end
-      end)
-      |> handle_into_option(opts[:into])
+  If assigns contain `:form` and `:field` keys then it will set `:id`, `:name` and `:value`
+  from received `Phoenix.HTML.Form`
 
-    Map.merge(assigns, new_assigns)
-  end
+  ## Parameters
+    * `assigns` - your component assigns
 
-  defp handle_into_option(assigns, nil), do: assigns
+  ## Example
+  ```
+  assigns
+  |> set_form_attributes()
+  ```
+  """
+  def set_form_attributes(assigns) do
+    form = assigns[:form]
+    field = assigns[:field]
 
-  defp handle_into_option(assigns, into) do
-    into_assign = for({_key, {:safe, attr}} <- assigns, do: attr)
-    attr_key = raw_attribute_key(into)
-    Map.put(assigns, attr_key, {:safe, Enum.join(into_assign, " ")})
-  end
-
-  defp set_empty_attributes(assigns, nil), do: assigns
-
-  defp set_empty_attributes(assigns, attributes) do
-    for attr <- attributes, reduce: assigns do
-      acc ->
-        attr_key = raw_attribute_key(attr)
-        Map.put_new(acc, attr_key, {:safe, ""})
+    if form && field do
+      assigns
+      |> Map.put_new(:id, input_id(form, field))
+      |> Map.put_new(:name, input_name(form, field))
+      |> Map.put_new(:for, input_name(form, field))
+      |> Map.put_new(:value, input_value(form, field))
+      |> Map.update!(:value, &maybe_html_escape/1)
+    else
+      assigns
     end
-  end
-
-  defp raw_attribute(attr), do: attr |> to_string() |> String.replace("_", "-")
-  defp data_attribute(attr), do: "data-#{raw_attribute(attr)}"
-
-  defp raw_attribute_key(attr) do
-    "raw_#{attr}" |> String.replace("@", "") |> String.to_atom()
-  end
-
-  defp escaped(val, opts \\ [])
-
-  defp escaped(val, json: true) do
-    {:safe, escaped_val} = val |> @json_library.encode!() |> html_escape()
-    "\"#{escaped_val}\""
-  end
-
-  defp escaped(val, _) do
-    {:safe, escaped_val} = html_escape(val)
-    "\"#{escaped_val}\""
   end
 
   defp find_assigns_with_prefix(assigns, prefix) do
@@ -256,4 +219,7 @@ defmodule PhxComponentHelpers do
         String.starts_with?(key_s, prefix),
         do: key
   end
+
+  defp maybe_html_escape(nil), do: nil
+  defp maybe_html_escape(value), do: html_escape(value)
 end
