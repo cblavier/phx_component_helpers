@@ -135,7 +135,7 @@ end
 Then you only needs to use `PhxComponentHelpers.set_form_attributes/3` within your own form LiveComponents in order to fetch names & values from the form. Your template will then look like this:
 
 ```elixir
-<%= f = my_form_for @changeset, phx_submit: "form_submit", class: "divide-none" do %>
+<%= f = my_form_for @changeset, "#", phx_submit: "form_submit", class: "divide-none" do %>
   <%= live_component @socket, InputGroup do %>
     <%= live_component @socket, Label, form: f, field: :name, label: "Name" %>
     <%= live_component @socket, TextInput, form: f, field: :name  %>
