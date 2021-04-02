@@ -1,3 +1,10 @@
+# 0.7.0
+- `PhxComponentHelpers.set_form_attributes/3` will now init form data with nil values
+when no form/field is provided
+- `PhxComponentHelpers.set_form_attributes/3` retrieves and assigns form errors
+- `PhxComponentHelpers.extend_class/2` now supports new `:error_class` option to
+extend CSS classes when a form field is faulty
+
 # 0.6.0
 - added `PhxViewHelpers` than can be used within templates
 - added `PhxComponentHelpers.set_form_attributes/3` to fetch `Phoenix.HTML.Form` data

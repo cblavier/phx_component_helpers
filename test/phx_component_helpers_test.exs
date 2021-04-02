@@ -223,13 +223,58 @@ defmodule PhxComponentHelpersTest do
       assert new_assigns ==
                Map.put(assigns, :raw_wrapper_class, {:safe, "class=\"bg-blue-500 mt-2\""})
     end
+
+    test "extends with error_class when a form field is faulty" do
+      assigns = %{
+        class: "mt-2",
+        form: %Form{data: %{my_field: "42"}, source: %{errors: [my_field: "error"]}},
+        field: :my_field
+      }
+
+      new_assigns =
+        Helpers.extend_class(assigns, "bg-blue-500 mt-8", error_class: "form-input-error")
+
+      assert new_assigns ==
+               Map.put(
+                 assigns,
+                 :raw_class,
+                 {:safe, "class=\"bg-blue-500 mt-2 form-input-error\""}
+               )
+    end
+
+    test "does not extend with error_class when a form field is not faulty" do
+      assigns = %{
+        class: "mt-2",
+        form: %Form{data: %{my_field: "42"}, source: %{errors: []}},
+        field: :my_field
+      }
+
+      new_assigns =
+        Helpers.extend_class(assigns, "bg-blue-500 mt-8", error_class: "form-input-error")
+
+      assert new_assigns ==
+               Map.put(
+                 assigns,
+                 :raw_class,
+                 {:safe, "class=\"bg-blue-500 mt-2\""}
+               )
+    end
   end
 
   describe "set_form_attributes" do
     test "without form keeps the input assigns" do
       assigns = %{c: "foo", bar: "bar"}
       new_assigns = Helpers.set_form_attributes(assigns)
-      assert new_assigns == assigns
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:form, nil)
+               |> Map.put(:field, nil)
+               |> Map.put(:for, nil)
+               |> Map.put(:id, nil)
+               |> Map.put(:name, nil)
+               |> Map.put(:value, nil)
+               |> Map.put(:errors, [])
     end
 
     test "with form, field and value, set the form assigns" do
@@ -247,6 +292,7 @@ defmodule PhxComponentHelpersTest do
                |> Map.put(:id, "my_field")
                |> Map.put(:name, "my_field")
                |> Map.put(:value, {:safe, "42"})
+               |> Map.put(:errors, [])
     end
 
     test "with form, field and without value, set the form assigns" do
@@ -264,6 +310,7 @@ defmodule PhxComponentHelpersTest do
                |> Map.put(:id, "my_field")
                |> Map.put(:name, "my_field")
                |> Map.put(:value, nil)
+               |> Map.put(:errors, [])
     end
   end
 end

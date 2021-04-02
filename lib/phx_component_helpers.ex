@@ -14,8 +14,7 @@ defmodule PhxComponentHelpers do
     * set and extend css classes from component assigns
   """
 
-  import PhxComponentHelpers.Attributes
-  import PhxComponentHelpers.CSS
+  import PhxComponentHelpers.{Attributes, CSS, Forms}
   import Phoenix.HTML, only: [html_escape: 1]
   import Phoenix.HTML.Form, only: [input_id: 2, input_name: 2, input_value: 2]
 
@@ -162,12 +161,15 @@ defmodule PhxComponentHelpers do
 
   ## Options
   * `:into` - put all css classes into this assign
+  * `:error_class` - extra class that will be added if assigns contain form/field keys
+  and field is faulty.
 
   ## Example
   ```
   assigns
   |> extend_class("bg-blue-500 mt-8")
   |> extend_class("py-4 px-2 divide-y-8 divide-gray-200", into: :wrapper_class)
+  |> extend_class("form-input", error_class: "form-input-error", into: :input_class)
   ```
 
   `assigns` now contains `@raw_class` and `@raw_wrapper_class`.
@@ -178,15 +180,21 @@ defmodule PhxComponentHelpers do
   """
   def extend_class(assigns, default_classes, opts \\ []) do
     class_attribute_name = Keyword.get(opts, :into, :class)
-    raw_class = assigns |> do_extend_class(default_classes, class_attribute_name) |> escaped()
+
+    raw_class =
+      assigns
+      |> handle_error_class_option(opts[:error_class], class_attribute_name)
+      |> do_extend_class(default_classes, class_attribute_name)
+      |> escaped()
+
     Map.put(assigns, :"raw_#{class_attribute_name}", {:safe, "class=#{raw_class}"})
   end
 
   @doc ~S"""
   Extends assigns with form related attributes.
 
-  If assigns contain `:form` and `:field` keys then it will set `:id`, `:name` and `:value`
-  from received `Phoenix.HTML.Form`
+  If assigns contain `:form` and `:field` keys then it will set `:id`, `:name`, ':for',
+  `:value`, and `:errors` from received `Phoenix.HTML.Form`.
 
   ## Parameters
     * `assigns` - your component assigns
@@ -198,19 +206,28 @@ defmodule PhxComponentHelpers do
   ```
   """
   def set_form_attributes(assigns) do
-    form = assigns[:form]
-    field = assigns[:field]
-
-    if form && field do
-      assigns
-      |> Map.put_new(:id, input_id(form, field))
-      |> Map.put_new(:name, input_name(form, field))
-      |> Map.put_new(:for, input_name(form, field))
-      |> Map.put_new(:value, input_value(form, field))
-      |> Map.update!(:value, &maybe_html_escape/1)
-    else
-      assigns
-    end
+    with_form_fields(
+      assigns,
+      fn assigns, form, field ->
+        assigns
+        |> Map.put_new(:id, input_id(form, field))
+        |> Map.put_new(:name, input_name(form, field))
+        |> Map.put_new(:for, input_name(form, field))
+        |> Map.put_new(:value, input_value(form, field))
+        |> Map.update!(:value, &maybe_html_escape/1)
+        |> Map.put_new(:errors, form_errors(form, field))
+      end,
+      fn assigns ->
+        assigns
+        |> Map.put_new(:form, nil)
+        |> Map.put_new(:field, nil)
+        |> Map.put_new(:id, nil)
+        |> Map.put_new(:name, nil)
+        |> Map.put_new(:for, nil)
+        |> Map.put_new(:value, nil)
+        |> Map.put_new(:errors, [])
+      end
+    )
   end
 
   defp find_assigns_with_prefix(assigns, prefix) do

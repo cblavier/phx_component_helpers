@@ -5,7 +5,7 @@ defmodule PhxComponentHelpers.Attributes do
   import Phoenix.HTML, only: [html_escape: 1]
 
   @doc false
-  def set_attributes(assigns, attributes, attribute_fun, opts) do
+  def set_attributes(assigns, attributes, attribute_fun, opts \\ []) do
     new_assigns =
       attributes
       |> Enum.reduce(%{}, fn attr, acc ->
