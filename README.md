@@ -149,7 +149,7 @@ Then you only needs to use `PhxComponentHelpers.set_form_attributes/3` within yo
 
 ## Compared to Surface
 
-[Surface](https://github.com/surface-ui/surface) is a library built on the top of Phoenix LiveView and `live_components`. Surface is much more ambitious, heavier, and complex than `PhxComponentHelpers` is (which obviously isn't a framework, just helpers ...).
+[Surface](https://github.com/surface-ui/surface) is a library built on the top of Phoenix LiveView and `live_components`. Surface is much more ambitious and complex than `PhxComponentHelpers` is (which obviously isn't a framework, just helpers ...).
 
 `Surface` really changes the way you code user interfaces and components (you almost won't be using HTML templates anymore) whereas `PhxComponentHelpers` are just some sugar to help you using raw `phoenix_live_view`.
 
