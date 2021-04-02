@@ -15,7 +15,6 @@ defmodule PhxComponentHelpers do
   """
 
   import PhxComponentHelpers.{Attributes, CSS, Forms}
-  import Phoenix.HTML, only: [html_escape: 1]
   import Phoenix.HTML.Form, only: [input_id: 2, input_name: 2, input_value: 2]
 
   @doc ~S"""
@@ -210,24 +209,30 @@ defmodule PhxComponentHelpers do
       assigns,
       fn assigns, form, field ->
         assigns
-        |> Map.put_new(:id, input_id(form, field))
-        |> Map.put_new(:name, input_name(form, field))
-        |> Map.put_new(:for, input_name(form, field))
-        |> Map.put_new(:value, input_value(form, field))
-        |> Map.update!(:value, &maybe_html_escape/1)
-        |> Map.put_new(:errors, form_errors(form, field))
+        |> put_if_new_or_nil(:id, input_id(form, field))
+        |> put_if_new_or_nil(:name, input_name(form, field))
+        |> put_if_new_or_nil(:for, input_name(form, field))
+        |> put_if_new_or_nil(:value, input_value(form, field))
+        |> put_if_new_or_nil(:errors, form_errors(form, field))
       end,
       fn assigns ->
         assigns
-        |> Map.put_new(:form, nil)
-        |> Map.put_new(:field, nil)
-        |> Map.put_new(:id, nil)
-        |> Map.put_new(:name, nil)
-        |> Map.put_new(:for, nil)
-        |> Map.put_new(:value, nil)
-        |> Map.put_new(:errors, [])
+        |> put_if_new_or_nil(:form, nil)
+        |> put_if_new_or_nil(:field, nil)
+        |> put_if_new_or_nil(:id, nil)
+        |> put_if_new_or_nil(:name, nil)
+        |> put_if_new_or_nil(:for, nil)
+        |> put_if_new_or_nil(:value, nil)
+        |> put_if_new_or_nil(:errors, [])
       end
     )
+  end
+
+  defp put_if_new_or_nil(map, key, default) do
+    Map.update(map, key, default, fn
+      nil -> default
+      val -> val
+    end)
   end
 
   defp find_assigns_with_prefix(assigns, prefix) do
@@ -236,7 +241,4 @@ defmodule PhxComponentHelpers do
         String.starts_with?(key_s, prefix),
         do: key
   end
-
-  defp maybe_html_escape(nil), do: nil
-  defp maybe_html_escape(value), do: html_escape(value)
 end

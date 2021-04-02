@@ -227,7 +227,7 @@ defmodule PhxComponentHelpersTest do
     test "extends with error_class when a form field is faulty" do
       assigns = %{
         class: "mt-2",
-        form: %Form{data: %{my_field: "42"}, source: %{errors: [my_field: "error"]}},
+        form: %Form{data: %{my_field: "42"}, errors: [my_field: "error"]},
         field: :my_field
       }
 
@@ -291,7 +291,7 @@ defmodule PhxComponentHelpersTest do
                |> Map.put(:for, "my_field")
                |> Map.put(:id, "my_field")
                |> Map.put(:name, "my_field")
-               |> Map.put(:value, {:safe, "42"})
+               |> Map.put(:value, "42")
                |> Map.put(:errors, [])
     end
 
