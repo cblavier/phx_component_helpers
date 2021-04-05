@@ -35,7 +35,11 @@ defmodule PhxComponentHelpers do
   ## Example
   ```
   assigns
-  |> set_component_attributes([:id, :name, :label], required: [:id, :name], into: :attributes)
+  |> set_component_attributes(
+      [:id, :name, label: "default label"],
+      required: [:id, :name],
+      into: :attributes
+    )
   |> set_component_attributes([:value], json: true)
   ```
 

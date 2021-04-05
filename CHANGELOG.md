@@ -1,5 +1,5 @@
 # 0.8.0
-- `PhxComponentHelpers.extend_class/2` `:into` option is renamed in `:attribute``
+- `:into` option of `PhxComponentHelpers.extend_class/2`  is renamed in `:attribute`
 - `PhxComponentHelpers.set_form_attributes/3` will now set default form attributes when keys
 exist but are nil
 - `PhxComponentHelpers.set_component_attributes/3` and PhxComponentHelpers.set_data_attributes/3
