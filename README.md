@@ -132,7 +132,7 @@ def my_form_for(form_data, action, options) when is_list(options) do
 end
 ```
 
-Then you only needs to use `PhxComponentHelpers.set_form_attributes/3` within your own form LiveComponents in order to fetch names & values from the form. Your template will then look like this:
+Then you only needs to use `PhxComponentHelpers.set_form_attributes/1` within your own form LiveComponents in order to fetch names & values from the form. Your template will then look like this:
 
 ```elixir
 <%= f = my_form_for @changeset, "#", phx_submit: "form_submit", class: "divide-none" do %>

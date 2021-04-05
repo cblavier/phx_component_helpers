@@ -4,21 +4,21 @@
 # 0.8.0
 - `:into` option of `PhxComponentHelpers.extend_class/2` is renamed in `:attribute`
 - `PhxComponentHelpers.extend_class/2` will overwrite input assign class with extended class
-- `PhxComponentHelpers.set_form_attributes/3` will now set default form attributes when keys
+- `PhxComponentHelpers.set_form_attributes/1` will now set default form attributes when keys
 exist but are nil
 - `PhxComponentHelpers.set_component_attributes/3` and PhxComponentHelpers.set_data_attributes/3
 can now take default values
 
 # 0.7.0
-- `PhxComponentHelpers.set_form_attributes/3` will now init form data with nil values
+- `PhxComponentHelpers.set_form_attributes/1` will now init form data with nil values
 when no form/field is provided
-- `PhxComponentHelpers.set_form_attributes/3` retrieves and assigns form errors
+- `PhxComponentHelpers.set_form_attributes/1` retrieves and assigns form errors
 - `PhxComponentHelpers.extend_class/2` now supports new `:error_class` option to
 extend CSS classes when a form field is faulty
 
 # 0.6.0
 - added `PhxViewHelpers` than can be used within templates
-- added `PhxComponentHelpers.set_form_attributes/3` to fetch `Phoenix.HTML.Form` data
+- added `PhxComponentHelpers.set_form_attributes/1` to fetch `Phoenix.HTML.Form` data
 
 # 0.5.0
 - all assigns are no longer prefixed by `html_` but by `raw_`
