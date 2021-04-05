@@ -161,7 +161,7 @@ defmodule PhxComponentHelpers do
     * `default_classes` - the default classes that will be overridden by your assigns.
 
   ## Options
-  * `:into` - put all css classes into this assign
+  * `:attribute` - read & write css classes from & into this key
   * `:error_class` - extra class that will be added if assigns contain form/field keys
   and field is faulty.
 
@@ -169,8 +169,8 @@ defmodule PhxComponentHelpers do
   ```
   assigns
   |> extend_class("bg-blue-500 mt-8")
-  |> extend_class("py-4 px-2 divide-y-8 divide-gray-200", into: :wrapper_class)
-  |> extend_class("form-input", error_class: "form-input-error", into: :input_class)
+  |> extend_class("py-4 px-2 divide-y-8 divide-gray-200", attribute: :wrapper_class)
+  |> extend_class("form-input", error_class: "form-input-error", attribute: :input_class)
   ```
 
   `assigns` now contains `@raw_class` and `@raw_wrapper_class`.
@@ -180,7 +180,7 @@ defmodule PhxComponentHelpers do
     * `@raw_wrapper_class` would contain `"py-4 px-2 divide-none"`
   """
   def extend_class(assigns, default_classes, opts \\ []) do
-    class_attribute_name = Keyword.get(opts, :into, :class)
+    class_attribute_name = Keyword.get(opts, :attribute, :class)
 
     raw_class =
       assigns

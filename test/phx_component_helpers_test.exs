@@ -274,7 +274,7 @@ defmodule PhxComponentHelpersTest do
 
     test "can extend other class attribute" do
       assigns = %{wrapper_class: "mt-2"}
-      new_assigns = Helpers.extend_class(assigns, "bg-blue-500 mt-8 ", into: :wrapper_class)
+      new_assigns = Helpers.extend_class(assigns, "bg-blue-500 mt-8 ", attribute: :wrapper_class)
 
       assert new_assigns ==
                Map.put(assigns, :raw_wrapper_class, {:safe, "class=\"bg-blue-500 mt-2\""})
