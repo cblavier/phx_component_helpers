@@ -17,7 +17,9 @@ defmodule PhxComponentHelpers.Attributes do
             Map.put(acc, attr_key, {:safe, ""})
 
           {nil, default} ->
-            Map.put(acc, attr_key, {:safe, "#{attribute_fun.(attr)}=#{escaped(default, opts)}"})
+            acc
+            |> Map.put(attr, default)
+            |> Map.put(attr_key, {:safe, "#{attribute_fun.(attr)}=#{escaped(default, opts)}"})
 
           {val, _} ->
             Map.put(acc, attr_key, {:safe, "#{attribute_fun.(attr)}=#{escaped(val, opts)}"})

@@ -67,6 +67,7 @@ defmodule PhxComponentHelpersTest do
 
       assert new_assigns ==
                assigns
+               |> Map.put(:bar, "bar")
                |> Map.put(:raw_foo, {:safe, "foo=\"foo\""})
                |> Map.put(:raw_bar, {:safe, "bar=\"bar\""})
     end
@@ -79,6 +80,10 @@ defmodule PhxComponentHelpersTest do
 
       assert new_assigns ==
                assigns
+               |> Map.put(
+                 :bar,
+                 %{there: "also json"}
+               )
                |> Map.put(
                  :raw_foo,
                  {:safe, "foo=\"{&quot;here&quot;:&quot;some json&quot;}\""}
@@ -141,6 +146,7 @@ defmodule PhxComponentHelpersTest do
 
       assert new_assigns ==
                assigns
+               |> Map.put(:bar, "bar")
                |> Map.put(:raw_foo, {:safe, "data-foo=\"foo\""})
                |> Map.put(:raw_bar, {:safe, "data-bar=\"bar\""})
     end
@@ -153,6 +159,10 @@ defmodule PhxComponentHelpersTest do
 
       assert new_assigns ==
                assigns
+               |> Map.put(
+                 :bar,
+                 %{there: "also json"}
+               )
                |> Map.put(
                  :raw_foo,
                  {:safe, "data-foo=\"{&quot;here&quot;:&quot;some json&quot;}\""}

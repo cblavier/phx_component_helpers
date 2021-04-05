@@ -1,3 +1,6 @@
+# 0.8.1
+- fixed default attributes behavior
+
 # 0.8.0
 - `:into` option of `PhxComponentHelpers.extend_class/2` is renamed in `:attribute`
 - `PhxComponentHelpers.extend_class/2` will overwrite input assign class with extended class
