@@ -263,13 +263,19 @@ defmodule PhxComponentHelpersTest do
     test "without class keeps the default class attribute" do
       assigns = %{c: "foo", bar: "bar"}
       new_assigns = Helpers.extend_class(assigns, "bg-blue-500 mt-8")
-      assert new_assigns == Map.put(assigns, :raw_class, {:safe, "class=\"mt-8 bg-blue-500\""})
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:class, "mt-8 bg-blue-500")
+               |> Map.put(:raw_class, {:safe, "class=\"mt-8 bg-blue-500\""})
     end
 
     test "with class extends the default class attribute" do
       assigns = %{class: "mt-2"}
       new_assigns = Helpers.extend_class(assigns, "bg-blue-500 mt-8 ")
-      assert new_assigns == Map.put(assigns, :raw_class, {:safe, "class=\"bg-blue-500 mt-2\""})
+
+      assert new_assigns ==
+               %{class: "bg-blue-500 mt-2", raw_class: {:safe, "class=\"bg-blue-500 mt-2\""}}
     end
 
     test "can extend other class attribute" do
@@ -277,7 +283,10 @@ defmodule PhxComponentHelpersTest do
       new_assigns = Helpers.extend_class(assigns, "bg-blue-500 mt-8 ", attribute: :wrapper_class)
 
       assert new_assigns ==
-               Map.put(assigns, :raw_wrapper_class, {:safe, "class=\"bg-blue-500 mt-2\""})
+               %{
+                 wrapper_class: "bg-blue-500 mt-2",
+                 raw_wrapper_class: {:safe, "class=\"bg-blue-500 mt-2\""}
+               }
     end
 
     test "extends with error_class when a form field is faulty" do
@@ -291,8 +300,12 @@ defmodule PhxComponentHelpersTest do
         Helpers.extend_class(assigns, "bg-blue-500 mt-8", error_class: "form-input-error")
 
       assert new_assigns ==
-               Map.put(
-                 assigns,
+               assigns
+               |> Map.put(
+                 :class,
+                 "bg-blue-500 mt-2 form-input-error"
+               )
+               |> Map.put(
                  :raw_class,
                  {:safe, "class=\"bg-blue-500 mt-2 form-input-error\""}
                )
@@ -309,8 +322,12 @@ defmodule PhxComponentHelpersTest do
         Helpers.extend_class(assigns, "bg-blue-500 mt-8", error_class: "form-input-error")
 
       assert new_assigns ==
-               Map.put(
-                 assigns,
+               assigns
+               |> Map.put(
+                 :class,
+                 "bg-blue-500 mt-2"
+               )
+               |> Map.put(
                  :raw_class,
                  {:safe, "class=\"bg-blue-500 mt-2\""}
                )

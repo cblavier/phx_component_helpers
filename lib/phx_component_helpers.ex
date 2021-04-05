@@ -186,13 +186,14 @@ defmodule PhxComponentHelpers do
   def extend_class(assigns, default_classes, opts \\ []) do
     class_attribute_name = Keyword.get(opts, :attribute, :class)
 
-    raw_class =
+    new_class =
       assigns
       |> handle_error_class_option(opts[:error_class], class_attribute_name)
       |> do_extend_class(default_classes, class_attribute_name)
-      |> escaped()
 
-    Map.put(assigns, :"raw_#{class_attribute_name}", {:safe, "class=#{raw_class}"})
+    assigns
+    |> Map.put(:"#{class_attribute_name}", new_class)
+    |> Map.put(:"raw_#{class_attribute_name}", {:safe, "class=#{escaped(new_class)}"})
   end
 
   @doc ~S"""
