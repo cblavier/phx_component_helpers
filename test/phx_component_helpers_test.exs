@@ -368,5 +368,24 @@ defmodule PhxComponentHelpersTest do
                |> Map.put(:value, nil)
                |> Map.put(:errors, [])
     end
+
+    test "with form, does not overwrite set values, but overwrite nil values" do
+      assigns = %{
+        c: "foo",
+        for: "already_set",
+        id: nil,
+        form: %Form{data: %{}},
+        field: :my_field
+      }
+
+      new_assigns = Helpers.set_form_attributes(assigns)
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:id, "my_field")
+               |> Map.put(:name, "my_field")
+               |> Map.put(:value, nil)
+               |> Map.put(:errors, [])
+    end
   end
 end

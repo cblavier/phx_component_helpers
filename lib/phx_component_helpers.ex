@@ -230,10 +230,10 @@ defmodule PhxComponentHelpers do
     )
   end
 
-  defp put_if_new_or_nil(map, key, default) do
-    Map.update(map, key, default, fn
-      nil -> default
-      val -> val
+  defp put_if_new_or_nil(map, key, val) do
+    Map.update(map, key, val, fn
+      nil -> val
+      current -> current
     end)
   end
 
