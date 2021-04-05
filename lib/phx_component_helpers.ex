@@ -23,7 +23,9 @@ defmodule PhxComponentHelpers do
 
   ## Parameters
     * `assigns` - your component assigns
-    * `attributes` - a list of attributes (atoms) that will be fetched from assigns
+    * `attributes` - a list of attributes (atoms) that will be fetched from assigns.
+    Attributes can either be single atoms or tuples in the form `{:atom, default}` to
+    provide default values.
 
   ## Options
     * `:required` - raises if required attributes are absent from assigns

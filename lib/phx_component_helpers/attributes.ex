@@ -9,11 +9,18 @@ defmodule PhxComponentHelpers.Attributes do
     new_assigns =
       attributes
       |> Enum.reduce(%{}, fn attr, acc ->
+        {attr, default} = attribute_key_and_default(attr)
         attr_key = raw_attribute_key(attr)
 
-        case Map.get(assigns, attr) do
-          nil -> Map.put(acc, attr_key, {:safe, ""})
-          val -> Map.put(acc, attr_key, {:safe, "#{attribute_fun.(attr)}=#{escaped(val, opts)}"})
+        case {Map.get(assigns, attr), default} do
+          {nil, nil} ->
+            Map.put(acc, attr_key, {:safe, ""})
+
+          {nil, default} ->
+            Map.put(acc, attr_key, {:safe, "#{attribute_fun.(attr)}=#{escaped(default, opts)}"})
+
+          {val, _} ->
+            Map.put(acc, attr_key, {:safe, "#{attribute_fun.(attr)}=#{escaped(val, opts)}"})
         end
       end)
       |> handle_into_option(opts[:into])
@@ -52,6 +59,9 @@ defmodule PhxComponentHelpers.Attributes do
     {:safe, escaped_val} = html_escape(val)
     "\"#{escaped_val}\""
   end
+
+  def attribute_key_and_default({attr, default}), do: {attr, default}
+  def attribute_key_and_default(attr), do: {attr, nil}
 
   defp raw_attribute_key(attr) do
     "raw_#{attr}" |> String.replace("@", "") |> String.to_atom()

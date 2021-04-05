@@ -60,6 +60,34 @@ defmodule PhxComponentHelpersTest do
                |> Map.put(:raw_bar, {:safe, "bar=\"bar\""})
                |> Map.put(:raw_attributes, {:safe, "bar=\"bar\" foo=\"foo\""})
     end
+
+    test "set default values" do
+      assigns = %{foo: "foo"}
+      new_assigns = Helpers.set_component_attributes(assigns, [:foo, bar: "bar"])
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:raw_foo, {:safe, "foo=\"foo\""})
+               |> Map.put(:raw_bar, {:safe, "bar=\"bar\""})
+    end
+
+    test "set default json values" do
+      assigns = %{foo: %{here: "some json"}}
+
+      new_assigns =
+        Helpers.set_component_attributes(assigns, [:foo, bar: %{there: "also json"}], json: true)
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(
+                 :raw_foo,
+                 {:safe, "foo=\"{&quot;here&quot;:&quot;some json&quot;}\""}
+               )
+               |> Map.put(
+                 :raw_bar,
+                 {:safe, "bar=\"{&quot;there&quot;:&quot;also json&quot;}\""}
+               )
+    end
   end
 
   describe "set_data_attributes" do
@@ -105,6 +133,34 @@ defmodule PhxComponentHelpersTest do
       assert_raise ArgumentError, fn ->
         Helpers.set_data_attributes(assigns, [], required: [:baz])
       end
+    end
+
+    test "set default values" do
+      assigns = %{foo: "foo"}
+      new_assigns = Helpers.set_data_attributes(assigns, [:foo, bar: "bar"])
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:raw_foo, {:safe, "data-foo=\"foo\""})
+               |> Map.put(:raw_bar, {:safe, "data-bar=\"bar\""})
+    end
+
+    test "set default json values" do
+      assigns = %{foo: %{here: "some json"}}
+
+      new_assigns =
+        Helpers.set_data_attributes(assigns, [:foo, bar: %{there: "also json"}], json: true)
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(
+                 :raw_foo,
+                 {:safe, "data-foo=\"{&quot;here&quot;:&quot;some json&quot;}\""}
+               )
+               |> Map.put(
+                 :raw_bar,
+                 {:safe, "data-bar=\"{&quot;there&quot;:&quot;also json&quot;}\""}
+               )
     end
   end
 

@@ -1,3 +1,9 @@
+# 0.8.0
+- `PhxComponentHelpers.set_form_attributes/3` will now set default form attributes when keys
+exist but are nil
+- `PhxComponentHelpers.set_component_attributes/3` and PhxComponentHelpers.set_data_attributes/3
+can now take default values
+
 # 0.7.0
 - `PhxComponentHelpers.set_form_attributes/3` will now init form data with nil values
 when no form/field is provided
