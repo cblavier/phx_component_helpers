@@ -62,8 +62,8 @@ defmodule PhxComponentHelpers.Attributes do
     "\"#{escaped_val}\""
   end
 
-  def attribute_key_and_default({attr, default}), do: {attr, default}
-  def attribute_key_and_default(attr), do: {attr, nil}
+  defp attribute_key_and_default({attr, default}), do: {attr, default}
+  defp attribute_key_and_default(attr), do: {attr, nil}
 
   defp raw_attribute_key(attr) do
     "raw_#{attr}" |> String.replace("@", "") |> String.to_atom()
