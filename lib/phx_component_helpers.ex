@@ -35,20 +35,20 @@ defmodule PhxComponentHelpers do
   ## Example
   ```
   assigns
-  |> set_component_attributes(
+  |> set_attributes(
       [:id, :name, label: "default label"],
       required: [:id, :name],
       into: :attributes
     )
-  |> set_component_attributes([:value], json: true)
+  |> set_attributes([:value], json: true)
   ```
 
   `assigns` now contains `@raw_id`, `@raw_name`, `@raw_label` and `@raw_value`.
   It also contains `@raw_attributes` which holds the values if `:id`, `:name` and `:label`.
   """
-  def set_component_attributes(assigns, attributes, opts \\ []) do
+  def set_attributes(assigns, attributes, opts \\ []) do
     assigns
-    |> set_attributes(attributes, &raw_attribute/1, opts)
+    |> do_set_attributes(attributes, &raw_attribute/1, opts)
     |> validate_required_attributes(opts[:required])
   end
 
@@ -56,7 +56,7 @@ defmodule PhxComponentHelpers do
   Extends assigns with raw_* data-attributes that can be interpolated within
   your component markup.
 
-  Behaves exactly like `set_component_attributes/3` excepted the output `@raw_attr`
+  Behaves exactly like `set_attributes/3` excepted the output `@raw_attr`
   assigns contain data-attributes markup.
 
   ## Example
@@ -70,7 +70,7 @@ defmodule PhxComponentHelpers do
   """
   def set_data_attributes(assigns, attributes, opts \\ []) do
     assigns
-    |> set_attributes(attributes, &data_attribute/1, opts)
+    |> do_set_attributes(attributes, &data_attribute/1, opts)
     |> set_empty_attributes(opts[:init])
     |> validate_required_attributes(opts[:required])
   end
@@ -110,7 +110,7 @@ defmodule PhxComponentHelpers do
       |> Enum.uniq()
 
     assigns
-    |> set_attributes(phx_attributes, &raw_attribute/1, opts)
+    |> do_set_attributes(phx_attributes, &raw_attribute/1, opts)
     |> set_empty_attributes(opts[:init])
     |> validate_required_attributes(opts[:required])
   end

@@ -33,7 +33,7 @@ defmodule Forms.Button do
     assigns =
       assigns
       |> extend_class("bg-blue-700 hover:bg-blue-900 ...")
-      |> set_component_attributes([:type, :id, :label], required: [:id])
+      |> set_attributes([:type, :id, :label], required: [:id])
       |> set_phx_attributes()
 
     {:ok, assign(socket, assigns)}
