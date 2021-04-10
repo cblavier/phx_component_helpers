@@ -1,3 +1,8 @@
+# 0.9.0
+- renamed `PhxComponentHelpers.set_component_attributes/3` into `PhxComponentHelpers.set_attributes/3`
+- removed `PhxComponentHelpers.set_data_attributes/3` which has been replaced by a `data: true` option passed to `PhxComponentHelpers.set_attributes/3`
+- new feature to pass / merge assigns to child components
+
 # 0.8.1
 - fixed default attributes behavior
 
@@ -6,7 +11,7 @@
 - `PhxComponentHelpers.extend_class/2` will overwrite input assign class with extended class
 - `PhxComponentHelpers.set_form_attributes/1` will now set default form attributes when keys
 exist but are nil
-- `PhxComponentHelpers.set_component_attributes/3` and PhxComponentHelpers.set_data_attributes/3
+- `PhxComponentHelpers.set_attributes/3` and PhxComponentHelpers.set_data_attributes/3
 can now take default values
 
 # 0.7.0
@@ -27,8 +32,8 @@ extend CSS classes when a form field is faulty
 - `extend_class/2` changes its signature to also use `into`
 
 # 0.4.0
-- `set_component_attributes/3` will set absent assigns by default
-- removed `:init` option from `set_component_attributes/3`
+- `set_attributes/3` will set absent assigns by default
+- removed `:init` option from `set_attributes/3`
 - added `validate_required_attributes/2` 
 
 # 0.3.0

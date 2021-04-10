@@ -95,22 +95,22 @@ defmodule PhxComponentHelpersTest do
     end
   end
 
-  describe "set_data_attributes" do
+  describe "set data attributes" do
     test "with unknown attributes it let the assigns unchanged" do
       assigns = %{foo: "foo", bar: "bar"}
-      new_assigns = Helpers.set_data_attributes(assigns, [])
+      new_assigns = Helpers.set_attributes(assigns, [], data: true)
       assert new_assigns == assigns
     end
 
     test "with known attributes it sets the raw attribute" do
       assigns = %{foo: "foo", bar: "bar"}
-      new_assigns = Helpers.set_data_attributes(assigns, [:foo])
+      new_assigns = Helpers.set_attributes(assigns, [:foo], data: true)
       assert new_assigns == Map.put(assigns, :raw_foo, {:safe, "data-foo=\"foo\""})
     end
 
     test "with known attributes and json opt, it sets the attribute as json" do
       assigns = %{foo: %{here: "some json"}, bar: "bar"}
-      new_assigns = Helpers.set_data_attributes(assigns, [:foo], json: true)
+      new_assigns = Helpers.set_attributes(assigns, [:foo], data: true, json: true)
 
       assert new_assigns ==
                Map.put(
@@ -120,15 +120,9 @@ defmodule PhxComponentHelpersTest do
                )
     end
 
-    test "with init attributes it adds empty attribute" do
-      assigns = %{foo: "foo", bar: "bar"}
-      new_assigns = Helpers.set_data_attributes(assigns, [], init: [:baz])
-      assert new_assigns == Map.put(assigns, :raw_baz, {:safe, ""})
-    end
-
     test "validates required attributes" do
       assigns = %{foo: "foo", bar: "bar"}
-      new_assigns = Helpers.set_data_attributes(assigns, [], required: [:foo])
+      new_assigns = Helpers.set_attributes(assigns, [], required: [:foo], data: true)
       assert new_assigns == assigns
     end
 
@@ -136,13 +130,13 @@ defmodule PhxComponentHelpersTest do
       assigns = %{foo: "foo", bar: "bar"}
 
       assert_raise ArgumentError, fn ->
-        Helpers.set_data_attributes(assigns, [], required: [:baz])
+        Helpers.set_attributes(assigns, [], required: [:baz], data: true)
       end
     end
 
     test "set default values" do
       assigns = %{foo: "foo"}
-      new_assigns = Helpers.set_data_attributes(assigns, [:foo, bar: "bar"])
+      new_assigns = Helpers.set_attributes(assigns, [:foo, bar: "bar"], data: true)
 
       assert new_assigns ==
                assigns
@@ -155,7 +149,10 @@ defmodule PhxComponentHelpersTest do
       assigns = %{foo: %{here: "some json"}}
 
       new_assigns =
-        Helpers.set_data_attributes(assigns, [:foo, bar: %{there: "also json"}], json: true)
+        Helpers.set_attributes(assigns, [:foo, bar: %{there: "also json"}],
+          json: true,
+          data: true
+        )
 
       assert new_assigns ==
                assigns

@@ -30,6 +30,7 @@ defmodule PhxComponentHelpers do
   ## Options
     * `:required` - raises if required attributes are absent from assigns
     * `:json` - when true, will JSON encode the assign value
+    * `:data` - when true, HTML attributes are prefixed with `data-`
     * `:into` - merges all assigns in a single one that can be interpolated at once
 
   ## Example
@@ -48,30 +49,7 @@ defmodule PhxComponentHelpers do
   """
   def set_attributes(assigns, attributes, opts \\ []) do
     assigns
-    |> do_set_attributes(attributes, &raw_attribute/1, opts)
-    |> validate_required_attributes(opts[:required])
-  end
-
-  @doc ~S"""
-  Extends assigns with raw_* data-attributes that can be interpolated within
-  your component markup.
-
-  Behaves exactly like `set_attributes/3` excepted the output `@raw_attr`
-  assigns contain data-attributes markup.
-
-  ## Example
-  ```
-  assigns
-  |> set_data_attributes([:key, :text], required: [:key])
-  |> set_data_attributes([:document], json: true)
-  ```
-
-  `assigns` now contains `@raw_key`, `@raw_text` and `@raw_document`.
-  """
-  def set_data_attributes(assigns, attributes, opts \\ []) do
-    assigns
-    |> do_set_attributes(attributes, &data_attribute/1, opts)
-    |> set_empty_attributes(opts[:init])
+    |> do_set_attributes(attributes, opts)
     |> validate_required_attributes(opts[:required])
   end
 
@@ -110,7 +88,7 @@ defmodule PhxComponentHelpers do
       |> Enum.uniq()
 
     assigns
-    |> do_set_attributes(phx_attributes, &raw_attribute/1, opts)
+    |> do_set_attributes(phx_attributes, opts)
     |> set_empty_attributes(opts[:init])
     |> validate_required_attributes(opts[:required])
   end

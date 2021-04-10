@@ -5,12 +5,13 @@ defmodule PhxComponentHelpers.Attributes do
   import Phoenix.HTML, only: [html_escape: 1]
 
   @doc false
-  def do_set_attributes(assigns, attributes, attribute_fun, opts \\ []) do
+  def do_set_attributes(assigns, attributes, opts \\ []) do
     new_assigns =
       attributes
       |> Enum.reduce(%{}, fn attr, acc ->
         {attr, default} = attribute_key_and_default(attr)
         attr_key = raw_attribute_key(attr)
+        attribute_fun = attribute_fun(opts)
 
         case {Map.get(assigns, attr), default} do
           {nil, nil} ->
@@ -44,23 +45,26 @@ defmodule PhxComponentHelpers.Attributes do
   end
 
   @doc false
-  def raw_attribute(attr), do: attr |> to_string() |> String.replace("_", "-")
-
-  @doc false
-  def data_attribute(attr), do: "data-#{raw_attribute(attr)}"
-
-  @doc false
-  def escaped(val, opts \\ [])
-
-  def escaped(val, json: true) do
-    {:safe, escaped_val} = val |> @json_library.encode!() |> html_escape()
-    "\"#{escaped_val}\""
+  def escaped(val, opts \\ []) do
+    if opts[:json] do
+      {:safe, escaped_val} = val |> @json_library.encode!() |> html_escape()
+      "\"#{escaped_val}\""
+    else
+      {:safe, escaped_val} = html_escape(val)
+      "\"#{escaped_val}\""
+    end
   end
 
-  def escaped(val, _) do
-    {:safe, escaped_val} = html_escape(val)
-    "\"#{escaped_val}\""
+  defp attribute_fun(opts) do
+    if opts[:data] do
+      &data_attribute/1
+    else
+      &raw_attribute/1
+    end
   end
+
+  defp raw_attribute(attr), do: attr |> to_string() |> String.replace("_", "-")
+  defp data_attribute(attr), do: "data-#{raw_attribute(attr)}"
 
   defp attribute_key_and_default({attr, default}), do: {attr, default}
   defp attribute_key_and_default(attr), do: {attr, nil}
