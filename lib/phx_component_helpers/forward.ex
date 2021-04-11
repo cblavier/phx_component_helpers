@@ -1,8 +1,6 @@
 defmodule PhxComponentHelpers.Forward do
   @moduledoc false
 
-  def handle_prefix_option(assigns, nil), do: assigns
-
   def handle_prefix_option(assigns, prefix) do
     prefix = "#{prefix}_"
 
@@ -18,8 +16,6 @@ defmodule PhxComponentHelpers.Forward do
         end
     end
   end
-
-  def handle_take_option(assigns, nil), do: assigns
 
   def handle_take_option(assigns, attributes) do
     Map.take(assigns, attributes)
