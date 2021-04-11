@@ -1,7 +1,7 @@
 # 0.9.0
 - renamed `PhxComponentHelpers.set_component_attributes/3` into `PhxComponentHelpers.set_attributes/3`
 - removed `PhxComponentHelpers.set_data_attributes/3` which has been replaced by a `data: true` option passed to `PhxComponentHelpers.set_attributes/3`
-- new feature to pass / merge assigns to child components
+- new `PhxComponentHelpers.forward_assigns/2` to pass assigns to child components
 
 # 0.8.1
 - fixed default attributes behavior

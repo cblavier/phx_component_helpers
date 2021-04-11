@@ -412,4 +412,42 @@ defmodule PhxComponentHelpersTest do
                |> Map.put(:errors, [])
     end
   end
+
+  describe "forward_assigns" do
+    test "without options, it does nothing" do
+      assigns = %{foo: "foo", bar: "bar"}
+      new_assigns = Helpers.forward_assigns(assigns, [])
+      assert new_assigns == assigns
+    end
+
+    test "with take option" do
+      assigns = %{foo: "foo", bar: "bar", baz: "baz"}
+      new_assigns = Helpers.forward_assigns(assigns, take: [:bar, :baz])
+      assert new_assigns == %{bar: "bar", baz: "baz"}
+    end
+
+    test "with prefix option" do
+      assigns = %{
+        foo: "foo",
+        prefix_bar: "bar",
+        prefix_baz: "baz",
+        prefix_nested_prefix_baz: "baz"
+      }
+
+      new_assigns = Helpers.forward_assigns(assigns, prefix: :prefix)
+      assert new_assigns == %{bar: "bar", baz: "baz", nested_prefix_baz: "baz"}
+    end
+
+    test "with take and prefix option" do
+      assigns = %{
+        foo: "foo",
+        bar: "bar",
+        prefix_bar: "bar",
+        prefix_baz: "baz"
+      }
+
+      new_assigns = Helpers.forward_assigns(assigns, prefix: :prefix, take: [:foo])
+      assert new_assigns == %{foo: "foo", bar: "bar", baz: "baz"}
+    end
+  end
 end

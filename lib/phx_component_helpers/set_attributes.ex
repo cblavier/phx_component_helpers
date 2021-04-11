@@ -1,4 +1,4 @@
-defmodule PhxComponentHelpers.Attributes do
+defmodule PhxComponentHelpers.SetAttributes do
   @moduledoc false
   @json_library Jason
 
@@ -44,8 +44,7 @@ defmodule PhxComponentHelpers.Attributes do
     end
   end
 
-  @doc false
-  def escaped(val, opts \\ []) do
+  defp escaped(val, opts) do
     if opts[:json] do
       {:safe, escaped_val} = val |> @json_library.encode!() |> html_escape()
       "\"#{escaped_val}\""

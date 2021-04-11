@@ -16,6 +16,7 @@ It provides the following features:
  * encode attributes as JSON from an Elixir structure assign
  * validate mandatory attributes
  * set and extend CSS classes from component assigns
+ * forward a subset of assigns to child components
 
 ## Example
 
@@ -163,7 +164,7 @@ Add the following to your `mix.exs`.
 ```elixir
 def deps do
   [
-    {:phx_component_helpers, "~> 0.8.0"},
+    {:phx_component_helpers, "~> 0.9.0"},
     {:jason, "~> 1.0"} # only required if you want to use json encoding options
   ]
 end

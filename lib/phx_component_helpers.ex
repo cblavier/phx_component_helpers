@@ -6,15 +6,16 @@ defmodule PhxComponentHelpers do
 
   It provides following features:
 
-    * set html attributes from component assigns
-    * set data attributes from component assigns
-    * set phx_* attributes from component assigns
-    * encode attributes as JSON from an Elixir structure assign
-    * validate mandatory attributes
-    * set and extend css classes from component assigns
+  * set HTML or data attributes from component assigns
+  * set phx_* attributes from component assigns
+  * set attributes with any custom prefix such as `@click` or `x-bind:` from [alpinejs](https://github.com/alpinejs/alpine)
+  * encode attributes as JSON from an Elixir structure assign
+  * validate mandatory attributes
+  * set and extend CSS classes from component assigns
   """
 
-  import PhxComponentHelpers.{Attributes, CSS, Forms}
+  import PhxComponentHelpers.{SetAttributes, CSS, Forms, Forward}
+  import Phoenix.HTML, only: [html_escape: 1]
   import Phoenix.HTML.Form, only: [input_id: 2, input_name: 2, input_value: 2]
 
   @doc ~S"""
@@ -28,10 +29,10 @@ defmodule PhxComponentHelpers do
     provide default values.
 
   ## Options
-    * `:required` - raises if required attributes are absent from assigns
-    * `:json` - when true, will JSON encode the assign value
-    * `:data` - when true, HTML attributes are prefixed with `data-`
-    * `:into` - merges all assigns in a single one that can be interpolated at once
+  * `:required` - raises if required attributes are absent from assigns
+  * `:json` - when true, will JSON encode the assign value
+  * `:data` - when true, HTML attributes are prefixed with `data-`
+  * `:into` - merges all assigns in a single one that can be interpolated at once
 
   ## Example
   ```
@@ -61,13 +62,13 @@ defmodule PhxComponentHelpers do
   Can be used for intance to easily map `alpinejs` html attributes.
 
   ## Parameters
-    * `assigns` - your component assigns
-    * `prefixes` - a list of prefix as binaries
+  * `assigns` - your component assigns
+  * `prefixes` - a list of prefix as binaries
 
   ## Options
-    * `:init` - a list of attributes that will be initialized if absent from assigns
-    * `:required` - raises if required attributes are absent from assigns
-    * `:into` - merges all assigns in a single one that can be interpolated at once
+  * `:init` - a list of attributes that will be initialized if absent from assigns
+  * `:required` - raises if required attributes are absent from assigns
+  * `:into` - merges all assigns in a single one that can be interpolated at once
 
   ## Example
   ```
@@ -139,8 +140,8 @@ defmodule PhxComponentHelpers do
   be extended, on a class-by-class basis, by your assigns.
 
   ## Parameters
-    * `assigns` - your component assigns
-    * `default_classes` - the default classes that will be overridden by your assigns.
+  * `assigns` - your component assigns
+  * `default_classes` - the default classes that will be overridden by your assigns.
 
   ## Options
   * `:attribute` - read & write css classes from & into this key
@@ -158,8 +159,8 @@ defmodule PhxComponentHelpers do
   `assigns` now contains `@raw_class` and `@raw_wrapper_class`.
 
   If your input assigns were `%{class: "mt-2", wrapper_class: "divide-none"}` then:
-    * `@raw_class` would contain `"bg-blue-500 mt-2"`
-    * `@raw_wrapper_class` would contain `"py-4 px-2 divide-none"`
+  * `@raw_class` would contain `"bg-blue-500 mt-2"`
+  * `@raw_wrapper_class` would contain `"py-4 px-2 divide-none"`
   """
   def extend_class(assigns, default_classes, opts \\ []) do
     class_attribute_name = Keyword.get(opts, :attribute, :class)
@@ -181,7 +182,7 @@ defmodule PhxComponentHelpers do
   `:value`, and `:errors` from received `Phoenix.HTML.Form`.
 
   ## Parameters
-    * `assigns` - your component assigns
+  * `assigns` - your component assigns
 
   ## Example
   ```
@@ -211,6 +212,49 @@ defmodule PhxComponentHelpers do
         |> put_if_new_or_nil(:errors, [])
       end
     )
+  end
+
+  @doc ~S"""
+  Forward and filter assigns to sub components.
+
+  ## Parameters
+
+  * `assigns` - your component assigns
+
+  ## Options
+  * `prefix` - will only forward assigns prefixed by the given prefix. Forwarded assign key will no longer have the prefix
+  * `take`- is a list of key (without prefix) that will be picked from assigns to be forwarded
+
+  If both options are given at the same time, the resulting assigns will be the union of the two.
+
+
+  ## Example
+  Following will forward an assign map containing `%{button_id: 42, button_label: "label", phx_click: "save"}` as `%{id: 42, label: "label", phx_click: "save"}`
+  ```
+  forward_assigns(assigns, prefix: :button, take: [:phx_click])
+  ```
+  """
+  def forward_assigns(assigns, opts) do
+    cond do
+      opts[:prefix] && opts[:take] ->
+        prefix_assigns = handle_prefix_option(assigns, opts[:prefix])
+        root_assigns = handle_take_option(assigns, opts[:take])
+        Map.merge(prefix_assigns, root_assigns)
+
+      opts[:prefix] ->
+        handle_prefix_option(assigns, opts[:prefix])
+
+      opts[:take] ->
+        handle_take_option(assigns, opts[:take])
+
+      true ->
+        assigns
+    end
+  end
+
+  defp escaped(val) do
+    {:safe, escaped_val} = html_escape(val)
+    "\"#{escaped_val}\""
   end
 
   defp put_if_new_or_nil(map, key, val) do
