@@ -10,13 +10,19 @@
 
 It provides the following features:
 
- * set HTML or data attributes from component assigns
- * set phx_* attributes from component assigns
- * set attributes with any custom prefix such as `@click` or `x-bind:` from [alpinejs](https://github.com/alpinejs/alpine)
- * encode attributes as JSON from an Elixir structure assign
+ * set HTML, data or phx attributes from component assigns
+ * set a bunch of attributes at once with any custom prefix such as `@click` or `x-bind:` (for [alpinejs](https://github.com/alpinejs/alpine users)
  * validate mandatory attributes
  * set and extend CSS classes from component assigns
  * forward a subset of assigns to child components
+
+## Motivation
+
+Writing a library of stateless live_components is a great way to improve consistency in both your UI and code and also to get a significant productivity boost. 
+
+Best components can be used _as-is_ without any further configuration, but are versatile enough to be customized from templates or higher level components.
+
+Writing such components is not difficult, but involves a lot of boilerplate code. `PhxComponentHelpers` are here to alleviate pain.
 
 ## Example
 
@@ -64,14 +70,14 @@ From templates, it's looking like this:
 <% end %>
 ```
 
-## With the PETAL stack
+## How does it play with the PETAL stack?
 
 [PETAL](https://thinkingelixir.com/petal-stack-in-elixir/) stands for Phoenix - Elixir - TailwindCSS - Alpine.js - LiveView. In recent months it became quite popular in the Elixir ecosystem and `PhxComponentHelpers` are meant to fit in.
 
 - [TailwindCSS](https://tailwindcss.com) provides a new way to structure CSS but keeping a good HTML hygien required to rely on a component oriented library.
 - [Alpine.js](https://github.com/alpinejs/alpine) is the Javascript counterpart of Tailwind. It let you define dynamic behaviour right from your templates with HTML attributes.
 
-The point of developping good components is to provide strong defaults in the component so that they can be used as-is. But also to let these defaults be overriden right from the templates.
+The point of developping good components is to provide strong defaults in the component so that they can be used _as_-is. But also to let these defaults be overriden right from the templates.
 
 Here is the definition of a typical Form button, with `Tailwind` & `Alpine`:
 
@@ -91,8 +97,7 @@ defmodule Forms.Button do
       assigns
       |> extend_class(@css_class)
       |> set_phx_attributes()
-      |> set_prefixed_attributes(
-        ["@click", "x-bind:"],
+      |> set_prefixed_attributes(["@click", "x-bind:"],
         into: :alpine_attributes,
         required: "@click"
       )
