@@ -1,3 +1,7 @@
+# 0.10.0 
+- new `:merge` option on `PhxComponentHelpers.forward_assigns/2`
+- `PhxComponentHelpers.extend_class/2` can now take defaults as a function
+
 # 0.9.0
 - renamed `PhxComponentHelpers.set_component_attributes/3` into `PhxComponentHelpers.set_attributes/3`
 - removed `PhxComponentHelpers.set_data_attributes/3` which has been replaced by a `data: true` option passed to `PhxComponentHelpers.set_attributes/3`

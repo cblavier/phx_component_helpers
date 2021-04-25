@@ -296,6 +296,21 @@ defmodule PhxComponentHelpersTest do
                }
     end
 
+    test "default classes can be a function" do
+      assigns = %{class: "mt-2", active: true}
+
+      new_assigns =
+        Helpers.extend_class(assigns, fn
+          %{active: true} -> "bg-blue-500 mt-8"
+          _ -> "bg-gray-200 mt-8"
+        end)
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:class, "bg-blue-500 mt-2")
+               |> Map.put(:raw_class, {:safe, "class=\"bg-blue-500 mt-2\""})
+    end
+
     test "extends with error_class when a form field is faulty" do
       assigns = %{
         class: "mt-2",
@@ -414,10 +429,10 @@ defmodule PhxComponentHelpersTest do
   end
 
   describe "forward_assigns" do
-    test "without options, it does nothing" do
+    test "without options, it returns empty assigns" do
       assigns = %{foo: "foo", bar: "bar"}
       new_assigns = Helpers.forward_assigns(assigns, [])
-      assert new_assigns == assigns
+      assert new_assigns == %{}
     end
 
     test "with take option" do
@@ -448,6 +463,28 @@ defmodule PhxComponentHelpersTest do
 
       new_assigns = Helpers.forward_assigns(assigns, prefix: :prefix, take: [:foo])
       assert new_assigns == %{foo: "foo", bar: "bar", baz: "baz"}
+    end
+
+    test "only with merge option" do
+      assigns = %{
+        foo: "foo",
+        bar: "bar"
+      }
+
+      new_assigns = Helpers.forward_assigns(assigns, merge: %{hello: "world"})
+      assert new_assigns == %{hello: "world"}
+    end
+
+    test "with prefix & merge options" do
+      assigns = %{
+        foo: "foo",
+        bar: "bar",
+        prefix_bar: "bar",
+        prefix_baz: "baz"
+      }
+
+      new_assigns = Helpers.forward_assigns(assigns, prefix: :prefix, merge: %{hello: "world"})
+      assert new_assigns == %{bar: "bar", baz: "baz", hello: "world"}
     end
   end
 end

@@ -21,7 +21,7 @@ defmodule PhxViewHelpers do
   end
   """
   def extend_form_class(options, default_classes) do
-    extended_classes = do_extend_class(options, default_classes, :class)
+    extended_classes = do_css_extend_class(options, default_classes, :class)
     Keyword.put(options, :class, extended_classes)
   end
 end

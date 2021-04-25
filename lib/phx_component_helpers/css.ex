@@ -2,18 +2,24 @@ defmodule PhxComponentHelpers.CSS do
   @moduledoc false
 
   @doc false
-  def do_extend_class(assigns, default_classes, class_attribute_name) when is_map(assigns) do
+  def do_css_extend_class(assigns, default_classes, class_attribute_name) when is_map(assigns) do
     input_class = Map.get(assigns, class_attribute_name) || ""
-    do_extend_class(input_class, default_classes)
+    do_extend_class(assigns, input_class, default_classes)
   end
 
   @doc false
-  def do_extend_class(options, default_classes, class_attribute_name) when is_list(options) do
+  def do_css_extend_class(options, default_classes, class_attribute_name) when is_list(options) do
     input_class = Keyword.get(options, class_attribute_name) || ""
-    do_extend_class(input_class, default_classes)
+    do_extend_class(options, input_class, default_classes)
   end
 
-  defp do_extend_class(input_class, default_classes) do
+  defp do_extend_class(assigns_or_options, input_class, default_classes) do
+    default_classes =
+      case default_classes do
+        _ when is_function(default_classes) -> default_classes.(assigns_or_options)
+        _ -> default_classes
+      end
+
     default_classes = String.split(default_classes, [" ", "\n"], trim: true)
     extend_classes = String.split(input_class, [" ", "\n"], trim: true)
 

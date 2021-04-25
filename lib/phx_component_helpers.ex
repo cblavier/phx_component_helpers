@@ -134,14 +134,22 @@ defmodule PhxComponentHelpers do
   end
 
   @doc ~S"""
-  Extends assigns with class attributes.
+  Set assigns with class attributes.
 
   The class attribute will take provided `default_classes` as a default value and will
   be extended, on a class-by-class basis, by your assigns.
 
+  This function will identify default classes to be replaced by assigns on a prefix basis:
+  - "bg-gray-200" will be overwritten by "bg-blue-500" because they share the same "bg-" prefix
+  - "hover:bg-gray-200" will be overwritten by "hover:bg-blue-500" because they share the same
+  "hover:bg-" prefix
+  - "m-1" would not be overwritten by "mt-1" because they don't share the same prefix ("m-" vs "mt-")
+
   ## Parameters
   * `assigns` - your component assigns
   * `default_classes` - the default classes that will be overridden by your assigns.
+  This parameter can be a binary or a single parameter function that receives all assigns and
+  returns a binary
 
   ## Options
   * `:attribute` - read & write css classes from & into this key
@@ -154,6 +162,10 @@ defmodule PhxComponentHelpers do
   |> extend_class("bg-blue-500 mt-8")
   |> extend_class("py-4 px-2 divide-y-8 divide-gray-200", attribute: :wrapper_class)
   |> extend_class("form-input", error_class: "form-input-error", attribute: :input_class)
+  |> extend_class(fn assigns ->
+      default = "p-2 m-4 text-sm "
+      if assigns[:active], do: default <> "bg-indigo-500", else: default <> "bg-gray-200"
+     end)
   ```
 
   `assigns` now contains `@raw_class` and `@raw_wrapper_class`.
@@ -168,7 +180,7 @@ defmodule PhxComponentHelpers do
     new_class =
       assigns
       |> handle_error_class_option(opts[:error_class], class_attribute_name)
-      |> do_extend_class(default_classes, class_attribute_name)
+      |> do_css_extend_class(default_classes, class_attribute_name)
 
     assigns
     |> Map.put(:"#{class_attribute_name}", new_class)
@@ -216,6 +228,8 @@ defmodule PhxComponentHelpers do
 
   @doc ~S"""
   Forward and filter assigns to sub components.
+  By default it doesn't forward anything unless you provide it with any combination
+  of the options described below.
 
   ## Parameters
 
@@ -224,6 +238,7 @@ defmodule PhxComponentHelpers do
   ## Options
   * `prefix` - will only forward assigns prefixed by the given prefix. Forwarded assign key will no longer have the prefix
   * `take`- is a list of key (without prefix) that will be picked from assigns to be forwarded
+  * `merge`- takes a map that will be merged as-is to the output assigns
 
   If both options are given at the same time, the resulting assigns will be the union of the two.
 
@@ -235,20 +250,10 @@ defmodule PhxComponentHelpers do
   ```
   """
   def forward_assigns(assigns, opts) do
-    cond do
-      opts[:prefix] && opts[:take] ->
-        prefix_assigns = handle_prefix_option(assigns, opts[:prefix])
-        root_assigns = handle_take_option(assigns, opts[:take])
-        Map.merge(prefix_assigns, root_assigns)
-
-      opts[:prefix] ->
-        handle_prefix_option(assigns, opts[:prefix])
-
-      opts[:take] ->
-        handle_take_option(assigns, opts[:take])
-
-      true ->
-        assigns
+    for option <- opts, reduce: %{} do
+      acc ->
+        assigns = handle_forward_option(assigns, option)
+        Map.merge(acc, assigns)
     end
   end
 

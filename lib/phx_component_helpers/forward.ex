@@ -1,7 +1,7 @@
 defmodule PhxComponentHelpers.Forward do
   @moduledoc false
 
-  def handle_prefix_option(assigns, prefix) do
+  def handle_forward_option(assigns, {:prefix, prefix}) do
     prefix = "#{prefix}_"
 
     for {key, val} <- assigns, reduce: %{} do
@@ -17,7 +17,11 @@ defmodule PhxComponentHelpers.Forward do
     end
   end
 
-  def handle_take_option(assigns, attributes) do
+  def handle_forward_option(assigns, {:take, attributes}) do
     Map.take(assigns, attributes)
+  end
+
+  def handle_forward_option(_assigns, {:merge, assigns}) do
+    assigns
   end
 end
