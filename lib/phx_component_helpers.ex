@@ -190,7 +190,7 @@ defmodule PhxComponentHelpers do
   @doc ~S"""
   Extends assigns with form related attributes.
 
-  If assigns contain `:form` and `:field` keys then it will set `:id`, `:name`, ':for',
+  If assigns contain `:form` and `:field` keys then it will set `:id`, `:name`, `:for`,
   `:value`, and `:errors` from received `Phoenix.HTML.Form`.
 
   ## Parameters
