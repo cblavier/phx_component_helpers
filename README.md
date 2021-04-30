@@ -33,8 +33,6 @@ defmodule Forms.Button do
   use Phoenix.LiveComponent
   import PhxComponentHelpers
 
-  def mount(socket), do: {:ok, socket}
-
   def update(assigns, socket) do
     assigns =
       assigns
@@ -74,7 +72,7 @@ From templates, it looks like this:
 
 [PETAL](https://thinkingelixir.com/petal-stack-in-elixir/) stands for Phoenix - Elixir - TailwindCSS - Alpine.js - LiveView. In recent months it has become quite popular in the Elixir ecosystem and `PhxComponentHelpers` is meant to fit in.
 
-- [TailwindCSS](https://tailwindcss.com) provides a new way to structure CSS but keeps good HTML hygiene required to rely on a component-oriented library.
+- [TailwindCSS](https://tailwindcss.com) provides a new way to structure CSS, but keeping good HTML hygiene requires to rely on a component-oriented library.
 - [Alpine.js](https://github.com/alpinejs/alpine) is the Javascript counterpart of Tailwind. It lets you define dynamic behaviour right from your templates using HTML attributes.
 
 The point of developing good components is to provide strong defaults in the component so that they can be used _as_-is, but also to let these defaults be overridden right from the templates.
@@ -90,8 +88,6 @@ defmodule Forms.Button do
               border-transparent text-2xl leading-4 font-medium rounded-md \
               text-white bg-primary hover:bg-primary-hover"
 
-  def mount(socket), do: {:ok, socket}
-
   def update(assigns, socket) do
     assigns =
       assigns
@@ -99,7 +95,7 @@ defmodule Forms.Button do
       |> set_phx_attributes()
       |> set_prefixed_attributes(["@click", "x-bind:"],
         into: :alpine_attributes,
-        required: "@click"
+        required: ["@click"]
       )
 
     {:ok, assign(socket, assigns)}
