@@ -444,13 +444,14 @@ defmodule PhxComponentHelpersTest do
     test "with prefix option" do
       assigns = %{
         foo: "foo",
+        prefix: "prefix",
         prefix_bar: "bar",
         prefix_baz: "baz",
         prefix_nested_prefix_baz: "baz"
       }
 
       new_assigns = Helpers.forward_assigns(assigns, prefix: :prefix)
-      assert new_assigns == %{bar: "bar", baz: "baz", nested_prefix_baz: "baz"}
+      assert new_assigns == %{prefix: "prefix", bar: "bar", baz: "baz", nested_prefix_baz: "baz"}
     end
 
     test "with take and prefix option" do

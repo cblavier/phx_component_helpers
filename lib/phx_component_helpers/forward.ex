@@ -2,14 +2,15 @@ defmodule PhxComponentHelpers.Forward do
   @moduledoc false
 
   def handle_forward_option(assigns, {:prefix, prefix}) do
-    prefix = "#{prefix}_"
+    prefix_ = "#{prefix}_"
+    prefix_s = to_string(prefix)
 
     for {key, val} <- assigns, reduce: %{} do
       acc ->
         key = to_string(key)
 
-        if String.starts_with?(key, prefix) do
-          forwarded_key = key |> String.replace_leading(prefix, "") |> String.to_atom()
+        if key == prefix_s || String.starts_with?(key, prefix_) do
+          forwarded_key = key |> String.replace_leading(prefix_, "") |> String.to_atom()
           Map.put(acc, forwarded_key, val)
         else
           acc
