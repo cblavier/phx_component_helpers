@@ -17,9 +17,4 @@ defmodule PhxComponentHelpers.Forms do
   def form_errors(form, field) do
     Keyword.get_values(form.errors, field)
   end
-
-  defp errors?(form, field) do
-    errors = Keyword.get_values(form.errors, field)
-    errors && !Enum.empty?(errors)
-  end
 end
