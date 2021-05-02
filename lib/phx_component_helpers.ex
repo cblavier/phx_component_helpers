@@ -153,15 +153,12 @@ defmodule PhxComponentHelpers do
 
   ## Options
   * `:attribute` - read & write css classes from & into this key
-  * `:error_class` - extra class that will be added if assigns contain form/field keys
-  and field is faulty.
 
   ## Example
   ```
   assigns
   |> extend_class("bg-blue-500 mt-8")
   |> extend_class("py-4 px-2 divide-y-8 divide-gray-200", attribute: :wrapper_class)
-  |> extend_class("form-input", error_class: "form-input-error", attribute: :input_class)
   |> extend_class(fn assigns ->
       default = "p-2 m-4 text-sm "
       if assigns[:active], do: default <> "bg-indigo-500", else: default <> "bg-gray-200"
@@ -177,10 +174,7 @@ defmodule PhxComponentHelpers do
   def extend_class(assigns, default_classes, opts \\ []) do
     class_attribute_name = Keyword.get(opts, :attribute, :class)
 
-    new_class =
-      assigns
-      |> handle_error_class_option(opts[:error_class], class_attribute_name)
-      |> do_css_extend_class(default_classes, class_attribute_name)
+    new_class = do_css_extend_class(assigns, default_classes, class_attribute_name)
 
     assigns
     |> Map.put(:"#{class_attribute_name}", new_class)

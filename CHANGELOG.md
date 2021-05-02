@@ -1,3 +1,9 @@
+# 0.11.0
+- `PhxComponentHelpers.forward_assigns/2` with prefix :icon will now forward all `:icon_*` keys and `:icon` as well
+- removed `error_class` option on `PhxComponentHelpers.extend_class/2` which can now be handled
+by using a function as the first parameter
+- merged [first PR](https://github.com/cblavier/phx_component_helpers/pull/2) (mainly english mistakes ... 🇫🇷) ;-)
+
 # 0.10.0 
 - new `:merge` option on `PhxComponentHelpers.forward_assigns/2`
 - `PhxComponentHelpers.extend_class/2` can now take defaults as a function

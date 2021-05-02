@@ -169,7 +169,7 @@ Add the following to your `mix.exs`.
 ```elixir
 def deps do
   [
-    {:phx_component_helpers, "~> 0.10.0"},
+    {:phx_component_helpers, "~> 0.11.0"},
     {:jason, "~> 1.0"} # only required if you want to use json encoding options
   ]
 end
