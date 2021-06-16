@@ -56,14 +56,14 @@ end
 From templates, it looks like this:
 
 ```elixir
-<%= live_component @socket, Form, id: "form", phx_submit: "form_submit", class: "divide-none" do %>
-  <%= live_component @socket, InputGroup do %>
-    <%= live_component @socket, Label, for: "name", label: "Name" %>
-    <%= live_component @socket, TextInput, name: "name", value: @my.name %>
+<%= live_component Form, id: "form", phx_submit: "form_submit", class: "divide-none" do %>
+  <%= live_component InputGroup do %>
+    <%= live_component Label, for: "name", label: "Name" %>
+    <%= live_component TextInput, name: "name", value: @my.name %>
   <% end %>
     
-  <%= live_component @socket, ButtonGroup, class: "pt-2" do %>
-    <%= live_component @socket, Button, type: "submit", phx_click: "btn-click", label: "Save" %>
+  <%= live_component ButtonGroup, class: "pt-2" do %>
+    <%= live_component Button, type: "submit", phx_click: "btn-click", label: "Save" %>
   <% end %>
 <% end %>
 ```
@@ -118,8 +118,8 @@ end
 Then in your `html.leex` template you can imagine the following code, providing `@click` behaviour and overriding just the few tailwind css classes you need (only `p-*`, `w-*` and `h-*` will be replaced). No `phx` behaviour here, but it's ok, it won't break ;-)
 
 ```elixir
-<%= live_component @socket, Button, class: "p-0 w-7 h-7", "@click": "$dispatch('closeslideover')" do %>
-  <%= live_component @socket, Icon, icon: :plus_circle %>
+<%= live_component Button, class: "p-0 w-7 h-7", "@click": "$dispatch('closeslideover')" do %>
+  <%= live_component Icon, icon: :plus_circle %>
 <% end %>
 ```
 
@@ -137,13 +137,13 @@ Then you only need to use `PhxComponentHelpers.set_form_attributes/1` within you
 
 ```elixir
 <%= f = my_form_for @changeset, "#", phx_submit: "form_submit", class: "divide-none" do %>
-  <%= live_component @socket, InputGroup do %>
-    <%= live_component @socket, Label, form: f, field: :name, label: "Name" %>
-    <%= live_component @socket, TextInput, form: f, field: :name  %>
+  <%= live_component InputGroup do %>
+    <%= live_component Label, form: f, field: :name, label: "Name" %>
+    <%= live_component TextInput, form: f, field: :name  %>
   <% end %>
     
-  <%= live_component @socket, ButtonGroup, class: "pt-2" do %>
-    <%= live_component @socket, Button, type: "submit", label: "Save" %>
+  <%= live_component ButtonGroup, class: "pt-2" do %>
+    <%= live_component Button, type: "submit", label: "Save" %>
   <% end %>
 <% end %>
 ```
