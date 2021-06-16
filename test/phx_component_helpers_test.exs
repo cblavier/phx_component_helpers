@@ -466,4 +466,25 @@ defmodule PhxComponentHelpersTest do
       assert new_assigns == %{bar: "bar", baz: "baz", hello: "world"}
     end
   end
+
+  describe "has_errors" do
+    test "without form it returns false" do
+      refute Helpers.has_errors?(%{field: :foo})
+    end
+
+    test "without field it returns false" do
+      form = %Form{data: %{foo: "42"}, source: %{errors: []}}
+      refute Helpers.has_errors?(%{form: form})
+    end
+
+    test "with field & form, but no error it returns false" do
+      form = %Form{data: %{foo: "42"}}
+      refute Helpers.has_errors?(%{form: form, field: :foo})
+    end
+
+    test "with field, form, and error it returns true" do
+      form = %Form{data: %{foo: "42"}, errors: [foo: [{:some_error, "some error"}]]}
+      assert Helpers.has_errors?(%{form: form, field: :foo})
+    end
+  end
 end

@@ -226,7 +226,6 @@ defmodule PhxComponentHelpers do
   of the options described below.
 
   ## Parameters
-
   * `assigns` - your component assigns
 
   ## Options
@@ -250,6 +249,21 @@ defmodule PhxComponentHelpers do
         Map.merge(acc, assigns)
     end
   end
+
+  @doc ~S"""
+  If assigns include form and field entries, this function will let you
+  know if the given field is in error or not.
+  Returns true or false.
+
+  ## Parameters
+  * `assigns` - your component assigns, which should have `form` and `field` keys.
+  """
+  def has_errors?(_assigns = %{form: form, field: field}) do
+    errors = form_errors(form, field)
+    errors && !Enum.empty?(errors)
+  end
+
+  def has_errors?(_assigns), do: false
 
   defp escaped(val) do
     {:safe, escaped_val} = html_escape(val)
