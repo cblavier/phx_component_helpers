@@ -45,7 +45,7 @@ defmodule PhxComponentHelpersTest do
     test "with missing required attributes" do
       assigns = %{foo: "foo", bar: "bar"}
 
-      assert_raise ArgumentError, fn ->
+      assert_raise ArgumentError, "missing required attributes [:baz]", fn ->
         Helpers.set_attributes(assigns, [], required: [:baz])
       end
     end

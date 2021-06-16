@@ -1,11 +1,11 @@
 # TODO 
 - new `required_field?` function
-- explicit missing required error message
 - handling separate id and html_id
 
 # 0.12.0
 - switched examples to `live_component` without socket syntax
 - new `PhxComponentHelpers.has_errors?/1` function
+- `validate_required_attributes/2` now raises a more comprehensive exception
 
 # 0.11.0
 - `PhxComponentHelpers.forward_assigns/2` with prefix :icon will now forward all `:icon_*` keys and `:icon` as well
