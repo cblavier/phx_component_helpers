@@ -27,3 +27,4 @@ phx_component_helpers-*.tar
 /tmp
 
 .elixir_ls
+.tool-versions
