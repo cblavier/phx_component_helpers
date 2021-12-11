@@ -45,8 +45,14 @@ defmodule PhxComponentHelpers do
   |> set_attributes([:value], json: true)
   ```
 
-  `assigns` now contains `@raw_id`, `@raw_name`, `@raw_label` and `@raw_value`.
-  It also contains `@raw_attributes` which holds the values if `:id`, `:name` and `:label`.
+  `assigns` now contains :
+  - `@raw_id`, `@raw_name`, `@raw_label` and `@raw_value`.
+  - `@raw_attributes` which holds the values if `:id`, `:name` and `:label`.
+  - `@heex_id`, `@heex_name`, `@heex_label` and `@heex_value`.
+  - `@heex_attributes` which holds the values if `:id`, `:name` and `:label`.
+
+  raw attributes are meant to be used in leex templates whereas heex attributes
+  will be used in heex templates.
   """
   def set_attributes(assigns, attributes, opts \\ []) do
     assigns
@@ -80,7 +86,9 @@ defmodule PhxComponentHelpers do
     )
   ```
 
-  `assigns` now contains `@raw_click`, `@raw_x-bind:class` and `@raw_alpine_attributes`.
+  `assigns` now contains
+  - `@raw_click`, `@raw_x-bind:class` and `@raw_alpine_attributes`.
+  - `@heex_click`, `@heex_x-bind:class` and `@heex_alpine_attributes`.
   """
   def set_prefixed_attributes(assigns, prefixes, opts \\ []) do
     phx_attributes =
@@ -105,7 +113,9 @@ defmodule PhxComponentHelpers do
   |> set_phx_attributes(required: [:phx_submit], init: [:phx_change])
   ```
 
-  `assigns` now contains `@raw_phx_change`, `@raw_phx_submit` and `@raw_phx_attributes`.
+  `assigns` now contains
+  - `@raw_phx_change`, `@raw_phx_submit` and `@raw_phx_attributes`.
+  - `@heex_phx_change`, `@heex_phx_submit` and `@heex_phx_attributes`.
   """
   def set_phx_attributes(assigns, opts \\ []) do
     opts = Keyword.put_new(opts, :into, :phx_attributes)
@@ -167,11 +177,11 @@ defmodule PhxComponentHelpers do
      end)
   ```
 
-  `assigns` now contains `@raw_class` and `@raw_wrapper_class`.
+  `assigns` now contains `@raw_class`, `@raw_wrapper_class`, `@heex_class` and `@heex_wrapper_class`.
 
   If your input assigns were `%{class: "mt-2", wrapper_class: "divide-none"}` then:
-  * `@raw_class` would contain `"bg-blue-500 mt-2"`
-  * `@raw_wrapper_class` would contain `"py-4 px-2 divide-none"`
+  * `@raw_class` and `@heex_class` would contain `"bg-blue-500 mt-2"`
+  * `@raw_wrapper_class` and `@heex_wrapper_class` would contain `"py-4 px-2 divide-none"`
   """
   def extend_class(assigns, default_classes, opts \\ []) do
     class_attribute_name = Keyword.get(opts, :attribute, :class)
@@ -181,6 +191,7 @@ defmodule PhxComponentHelpers do
     assigns
     |> Map.put(:"#{class_attribute_name}", new_class)
     |> Map.put(:"raw_#{class_attribute_name}", {:safe, "class=#{escaped(new_class)}"})
+    |> Map.put(:"heex_#{class_attribute_name}", class: new_class)
   end
 
   @doc ~S"""

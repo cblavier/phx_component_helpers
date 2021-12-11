@@ -10,20 +10,33 @@ defmodule PhxComponentHelpers.SetAttributes do
       attributes
       |> Enum.reduce(%{}, fn attr, acc ->
         {attr, default} = attribute_key_and_default(attr)
-        attr_key = raw_attribute_key(attr)
-        attribute_fun = attribute_fun(opts)
+        raw_attr_key = raw_attribute_key(attr)
+        heex_attr_key = heex_attribute_key(attr)
+        raw_attribute_fun = raw_attribute_fun(opts)
+        heex_attribute_fun = heex_attribute_fun(opts)
 
         case {Map.get(assigns, attr), default} do
           {nil, nil} ->
-            Map.put(acc, attr_key, {:safe, ""})
+            acc
+            |> Map.put(raw_attr_key, {:safe, ""})
+            |> Map.put(heex_attr_key, [])
 
           {nil, default} ->
             acc
             |> Map.put(attr, default)
-            |> Map.put(attr_key, {:safe, "#{attribute_fun.(attr)}=#{escaped(default, opts)}"})
+            |> Map.put(
+              raw_attr_key,
+              {:safe, "#{raw_attribute_fun.(attr)}=#{raw_escaped(default, opts)}"}
+            )
+            |> Map.put(heex_attr_key, [{heex_attribute_fun.(attr), heex_escaped(default, opts)}])
 
           {val, _} ->
-            Map.put(acc, attr_key, {:safe, "#{attribute_fun.(attr)}=#{escaped(val, opts)}"})
+            acc
+            |> Map.put(
+              raw_attr_key,
+              {:safe, "#{raw_attribute_fun.(attr)}=#{raw_escaped(val, opts)}"}
+            )
+            |> Map.put(heex_attr_key, [{heex_attribute_fun.(attr), heex_escaped(val, opts)}])
         end
       end)
       |> handle_into_option(opts[:into])
@@ -44,7 +57,7 @@ defmodule PhxComponentHelpers.SetAttributes do
     end
   end
 
-  defp escaped(val, opts) do
+  defp raw_escaped(val, opts) do
     if opts[:json] do
       {:safe, escaped_val} = val |> @json_library.encode!() |> html_escape()
       "\"#{escaped_val}\""
@@ -54,16 +67,37 @@ defmodule PhxComponentHelpers.SetAttributes do
     end
   end
 
-  defp attribute_fun(opts) do
+  defp heex_escaped(val, opts) do
+    if opts[:json] do
+      @json_library.encode!(val)
+    else
+      val
+    end
+  end
+
+  defp raw_attribute_fun(opts) do
     if opts[:data] do
-      &data_attribute/1
+      &raw_data_attribute/1
     else
       &raw_attribute/1
     end
   end
 
+  defp heex_attribute_fun(opts) do
+    if opts[:data] do
+      &heex_data_attribute/1
+    else
+      &heex_attribute/1
+    end
+  end
+
   defp raw_attribute(attr), do: attr |> to_string() |> String.replace("_", "-")
-  defp data_attribute(attr), do: "data-#{raw_attribute(attr)}"
+  defp raw_data_attribute(attr), do: "data-#{raw_attribute(attr)}"
+
+  defp heex_attribute(attr),
+    do: attr |> to_string() |> String.replace("_", "-") |> String.to_atom()
+
+  defp heex_data_attribute(attr), do: String.to_atom("data-#{heex_attribute(attr)}")
 
   defp attribute_key_and_default({attr, default}), do: {attr, default}
   defp attribute_key_and_default(attr), do: {attr, nil}
@@ -72,11 +106,24 @@ defmodule PhxComponentHelpers.SetAttributes do
     "raw_#{attr}" |> String.replace("@", "") |> String.to_atom()
   end
 
+  defp heex_attribute_key(attr) do
+    "heex_#{attr}" |> String.replace("@", "") |> String.to_atom()
+  end
+
   defp handle_into_option(assigns, nil), do: assigns
 
   defp handle_into_option(assigns, into) do
-    into_assign = for({_key, {:safe, attr}} <- assigns, do: attr)
-    attr_key = raw_attribute_key(into)
-    Map.put(assigns, attr_key, {:safe, Enum.join(into_assign, " ")})
+    raw_into_assign = for({_key, {:safe, attr}} <- assigns, do: attr)
+
+    heex_into_assign =
+      for({key, attr} <- assigns, key |> to_string() |> String.starts_with?("heex"), do: attr)
+      |> List.flatten()
+
+    raw_attr_key = raw_attribute_key(into)
+    heex_attr_key = heex_attribute_key(into)
+
+    assigns
+    |> Map.put(raw_attr_key, {:safe, Enum.join(raw_into_assign, " ")})
+    |> Map.put(heex_attr_key, heex_into_assign)
   end
 end

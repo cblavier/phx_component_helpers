@@ -12,27 +12,39 @@ defmodule PhxComponentHelpersTest do
       assert new_assigns == assigns
     end
 
-    test "with known attributes it sets the raw attribute" do
+    test "with known attributes it set the raw and heex attributes" do
       assigns = %{foo: "foo", bar: "bar"}
       new_assigns = Helpers.set_attributes(assigns, [:foo])
-      assert new_assigns == Map.put(assigns, :raw_foo, {:safe, "foo=\"foo\""})
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:raw_foo, {:safe, "foo=\"foo\""})
+               |> Map.put(:heex_foo, foo: "foo")
     end
 
     test "absent assigns are set as empty attributes" do
       assigns = %{foo: "foo", bar: "bar"}
       new_assigns = Helpers.set_attributes(assigns, [:baz])
-      assert new_assigns == Map.put(assigns, :raw_baz, {:safe, ""})
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:raw_baz, {:safe, ""})
+               |> Map.put(:heex_baz, [])
     end
 
-    test "with known attributes and json opt, it sets the attribute as json" do
+    test "with known attributes and json opt, it set the attribute as json" do
       assigns = %{foo: %{here: "some json"}, bar: "bar"}
       new_assigns = Helpers.set_attributes(assigns, [:foo], json: true)
 
       assert new_assigns ==
-               Map.put(
-                 assigns,
+               assigns
+               |> Map.put(
                  :raw_foo,
                  {:safe, "foo=\"{&quot;here&quot;:&quot;some json&quot;}\""}
+               )
+               |> Map.put(
+                 :heex_foo,
+                 foo: "{\"here\":\"some json\"}"
                )
     end
 
@@ -59,6 +71,9 @@ defmodule PhxComponentHelpersTest do
                |> Map.put(:raw_foo, {:safe, "foo=\"foo\""})
                |> Map.put(:raw_bar, {:safe, "bar=\"bar\""})
                |> Map.put(:raw_attributes, {:safe, "bar=\"bar\" foo=\"foo\""})
+               |> Map.put(:heex_foo, foo: "foo")
+               |> Map.put(:heex_bar, bar: "bar")
+               |> Map.put(:heex_attributes, bar: "bar", foo: "foo")
     end
 
     test "set default values" do
@@ -70,6 +85,8 @@ defmodule PhxComponentHelpersTest do
                |> Map.put(:bar, "bar")
                |> Map.put(:raw_foo, {:safe, "foo=\"foo\""})
                |> Map.put(:raw_bar, {:safe, "bar=\"bar\""})
+               |> Map.put(:heex_foo, foo: "foo")
+               |> Map.put(:heex_bar, bar: "bar")
     end
 
     test "set default json values" do
@@ -92,6 +109,8 @@ defmodule PhxComponentHelpersTest do
                  :raw_bar,
                  {:safe, "bar=\"{&quot;there&quot;:&quot;also json&quot;}\""}
                )
+               |> Map.put(:heex_bar, bar: "{\"there\":\"also json\"}")
+               |> Map.put(:heex_foo, foo: "{\"here\":\"some json\"}")
     end
   end
 
@@ -102,21 +121,29 @@ defmodule PhxComponentHelpersTest do
       assert new_assigns == assigns
     end
 
-    test "with known attributes it sets the raw attribute" do
+    test "with known attributes it set the raw attribute" do
       assigns = %{foo: "foo", bar: "bar"}
       new_assigns = Helpers.set_attributes(assigns, [:foo], data: true)
-      assert new_assigns == Map.put(assigns, :raw_foo, {:safe, "data-foo=\"foo\""})
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:raw_foo, {:safe, "data-foo=\"foo\""})
+               |> Map.put(:heex_foo, "data-foo": "foo")
     end
 
-    test "with known attributes and json opt, it sets the attribute as json" do
+    test "with known attributes and json opt, it set the attribute as json" do
       assigns = %{foo: %{here: "some json"}, bar: "bar"}
       new_assigns = Helpers.set_attributes(assigns, [:foo], data: true, json: true)
 
       assert new_assigns ==
-               Map.put(
-                 assigns,
+               assigns
+               |> Map.put(
                  :raw_foo,
                  {:safe, "data-foo=\"{&quot;here&quot;:&quot;some json&quot;}\""}
+               )
+               |> Map.put(
+                 :heex_foo,
+                 "data-foo": "{\"here\":\"some json\"}"
                )
     end
 
@@ -143,6 +170,8 @@ defmodule PhxComponentHelpersTest do
                |> Map.put(:bar, "bar")
                |> Map.put(:raw_foo, {:safe, "data-foo=\"foo\""})
                |> Map.put(:raw_bar, {:safe, "data-bar=\"bar\""})
+               |> Map.put(:heex_foo, "data-foo": "foo")
+               |> Map.put(:heex_bar, "data-bar": "bar")
     end
 
     test "set default json values" do
@@ -168,6 +197,14 @@ defmodule PhxComponentHelpersTest do
                  :raw_bar,
                  {:safe, "data-bar=\"{&quot;there&quot;:&quot;also json&quot;}\""}
                )
+               |> Map.put(
+                 :heex_foo,
+                 "data-foo": "{\"here\":\"some json\"}"
+               )
+               |> Map.put(
+                 :heex_bar,
+                 "data-bar": "{\"there\":\"also json\"}"
+               )
     end
   end
 
@@ -186,6 +223,8 @@ defmodule PhxComponentHelpersTest do
                assigns
                |> Map.put(:raw_click, {:safe, "@click=\"open = true\""})
                |> Map.put(:"raw_x-bind:class", {:safe, "x-bind:class=\"open\""})
+               |> Map.put(:heex_click, "@click": "open = true")
+               |> Map.put(:"heex_x-bind:class", "x-bind:class": "open")
     end
 
     test "with init attributes it adds empty attribute" do
@@ -206,6 +245,7 @@ defmodule PhxComponentHelpersTest do
       assert new_assigns ==
                assigns
                |> Map.put(:"raw_click.away", {:safe, "@click.away=\"open = false\""})
+               |> Map.put(:"heex_click.away", "@click.away": "open = false")
     end
 
     test "with missing required attributes" do
@@ -227,6 +267,9 @@ defmodule PhxComponentHelpersTest do
                |> Map.put(:raw_phx_change, {:safe, "phx-change=\"foo\""})
                |> Map.put(:raw_phx_click, {:safe, "phx-click=\"bar\""})
                |> Map.put(:raw_phx_attributes, {:safe, "phx-change=\"foo\" phx-click=\"bar\""})
+               |> Map.put(:heex_phx_attributes, "phx-change": "foo", "phx-click": "bar")
+               |> Map.put(:heex_phx_change, "phx-change": "foo")
+               |> Map.put(:heex_phx_click, "phx-click": "bar")
     end
 
     test "with init attributes it adds empty attribute" do
@@ -238,7 +281,11 @@ defmodule PhxComponentHelpersTest do
     test "validates required attributes" do
       assigns = %{phx_click: "click"}
       new_assigns = Helpers.set_phx_attributes(assigns, required: [:phx_click], into: nil)
-      assert new_assigns == Map.put(assigns, :raw_phx_click, {:safe, "phx-click=\"click\""})
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:raw_phx_click, {:safe, "phx-click=\"click\""})
+               |> Map.put(:heex_phx_click, "phx-click": "click")
     end
 
     test "with missing required attributes" do
@@ -275,6 +322,7 @@ defmodule PhxComponentHelpersTest do
                assigns
                |> Map.put(:class, "mt-8 bg-blue-500")
                |> Map.put(:raw_class, {:safe, "class=\"mt-8 bg-blue-500\""})
+               |> Map.put(:heex_class, class: "mt-8 bg-blue-500")
     end
 
     test "with class extends the default class attribute" do
@@ -282,7 +330,11 @@ defmodule PhxComponentHelpersTest do
       new_assigns = Helpers.extend_class(assigns, "bg-blue-500 mt-8 ")
 
       assert new_assigns ==
-               %{class: "bg-blue-500 mt-2", raw_class: {:safe, "class=\"bg-blue-500 mt-2\""}}
+               %{
+                 class: "bg-blue-500 mt-2",
+                 raw_class: {:safe, "class=\"bg-blue-500 mt-2\""},
+                 heex_class: [class: "bg-blue-500 mt-2"]
+               }
     end
 
     test "can extend other class attribute" do
@@ -292,7 +344,8 @@ defmodule PhxComponentHelpersTest do
       assert new_assigns ==
                %{
                  wrapper_class: "bg-blue-500 mt-2",
-                 raw_wrapper_class: {:safe, "class=\"bg-blue-500 mt-2\""}
+                 raw_wrapper_class: {:safe, "class=\"bg-blue-500 mt-2\""},
+                 heex_wrapper_class: [class: "bg-blue-500 mt-2"]
                }
     end
 
@@ -309,6 +362,7 @@ defmodule PhxComponentHelpersTest do
                assigns
                |> Map.put(:class, "bg-blue-500 mt-2")
                |> Map.put(:raw_class, {:safe, "class=\"bg-blue-500 mt-2\""})
+               |> Map.put(:heex_class, class: "bg-blue-500 mt-2")
     end
 
     test "does not extend with error_class when a form field is not faulty" do
@@ -330,6 +384,10 @@ defmodule PhxComponentHelpersTest do
                |> Map.put(
                  :raw_class,
                  {:safe, "class=\"bg-blue-500 mt-2\""}
+               )
+               |> Map.put(
+                 :heex_class,
+                 class: "bg-blue-500 mt-2"
                )
     end
   end
