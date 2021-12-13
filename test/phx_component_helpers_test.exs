@@ -275,7 +275,11 @@ defmodule PhxComponentHelpersTest do
     test "with init attributes it adds empty attribute" do
       assigns = %{foo: "foo", bar: "bar"}
       new_assigns = Helpers.set_phx_attributes(assigns, init: [:phx_submit], into: nil)
-      assert new_assigns == Map.put(assigns, :raw_phx_submit, {:safe, ""})
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:raw_phx_submit, {:safe, ""})
+               |> Map.put(:heex_phx_submit, [])
     end
 
     test "validates required attributes" do

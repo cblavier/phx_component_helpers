@@ -52,8 +52,12 @@ defmodule PhxComponentHelpers.SetAttributes do
   def set_empty_attributes(assigns, attributes) do
     for attr <- attributes, reduce: assigns do
       acc ->
-        attr_key = raw_attribute_key(attr)
-        Map.put_new(acc, attr_key, {:safe, ""})
+        raw_attr_key = raw_attribute_key(attr)
+        heex_attr_key = heex_attribute_key(attr)
+
+        acc
+        |> Map.put_new(raw_attr_key, {:safe, ""})
+        |> Map.put_new(heex_attr_key, [])
     end
   end
 
