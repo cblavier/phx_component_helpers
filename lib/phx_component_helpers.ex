@@ -271,7 +271,8 @@ defmodule PhxComponentHelpers do
   ## Parameters
   * `assigns` - your component assigns, which should have `form` and `field` keys.
   """
-  def has_errors?(_assigns = %{form: form, field: field}) do
+  def has_errors?(_assigns = %{form: form, field: field})
+      when not is_nil(form) and not is_nil(field) do
     errors = form_errors(form, field)
     errors && !Enum.empty?(errors)
   end
