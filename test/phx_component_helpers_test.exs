@@ -233,7 +233,10 @@ defmodule PhxComponentHelpersTest do
       new_assigns =
         Helpers.set_prefixed_attributes(assigns, ["@click", "x-bind:"], init: ["@click.away"])
 
-      assert new_assigns == assigns |> Map.put(:"raw_click.away", {:safe, ""})
+      assert new_assigns ==
+               assigns
+               |> Map.put(:"raw_click.away", {:safe, ""})
+               |> Map.put(:"heex_click.away", [])
     end
 
     test "validates required attributes" do
