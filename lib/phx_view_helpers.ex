@@ -20,8 +20,13 @@ defmodule PhxViewHelpers do
     form_for(form_data, action, new_options)
   end
   """
-  def extend_form_class(options, default_classes) do
+  def extend_form_class(options, default_classes) when is_list(options) do
     extended_classes = do_css_extend_class(options, default_classes, :class)
     Keyword.put(options, :class, extended_classes)
+  end
+
+  def extend_form_class(options, default_classes) when is_map(options) do
+    extended_classes = do_css_extend_class(options, default_classes, :class)
+    Map.put(options, :class, extended_classes)
   end
 end
