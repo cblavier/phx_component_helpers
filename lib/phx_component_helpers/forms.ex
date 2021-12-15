@@ -17,7 +17,4 @@ defmodule PhxComponentHelpers.Forms do
   def form_errors(form, field) when not is_nil(form) and not is_nil(field) do
     Keyword.get_values(form.errors, field)
   end
-
-  @doc false
-  def form_errors(_, _), do: nil
 end
