@@ -1,6 +1,6 @@
 # 0.12.0
 - now injecting heex_attributes into assigns that can be used from heex templates
-- switched examples to `live_component` without socket syntax
+- switched examples to `HEEX` templating
 - new `PhxComponentHelpers.has_errors?/1` function
 - `validate_required_attributes/2` now raises a more comprehensive exception
 

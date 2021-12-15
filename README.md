@@ -30,22 +30,18 @@ Writing such components is not difficult, but involves a lot of boilerplate code
 
 ```elixir
 defmodule Forms.Button do
-  use Phoenix.LiveComponent
+  use Phoenix.Component
   import PhxComponentHelpers
 
-  def update(assigns, socket) do
+  def button(assigns) do
     assigns =
       assigns
       |> extend_class("bg-blue-700 hover:bg-blue-900 ...")
       |> set_attributes([:type, :id, :label], required: [:id])
       |> set_phx_attributes()
 
-    {:ok, assign(socket, assigns)}
-  end
-
-  def render(assigns) do
-    ~L"""
-    <button <%= @raw_id %> <%= @raw_type %> <%= @raw_phx_attributes %> <%= @raw_class %>>
+    ~H"""
+    <button {@heex_id} {@heex_type} {@heex_phx_attributes} {@heex_class}>
       <%= @label %>
     </button>
     """
@@ -55,17 +51,19 @@ end
 
 From templates, it looks like this:
 
-```elixir
-<%= live_component Form, id: "form", phx_submit: "form_submit", class: "divide-none" do %>
-  <%= live_component InputGroup do %>
-    <%= live_component Label, for: "name", label: "Name" %>
-    <%= live_component TextInput, name: "name", value: @my.name %>
-  <% end %>
+```heex
+<.form id="form" phx_submit="form_submit" class="divide-none">
+
+  <.input_group>
+    <.label for="name" label="Name"/>
+    <.text_input name="name" value={@my.name}/>
+  </.input_group>
     
-  <%= live_component ButtonGroup, class: "pt-2" do %>
+  <.button_group class="pt-2">
     <%= live_component Button, type: "submit", phx_click: "btn-click", label: "Save" %>
-  <% end %>
-<% end %>
+  </.button_group>
+
+</.form>
 ```
 
 ## How does it play with the PETAL stack?
@@ -81,14 +79,14 @@ Here is the definition of a typical Form button, with `Tailwind` & `Alpine`:
 
 ```elixir
 defmodule Forms.Button do
-  use Phoenix.LiveComponent
+  use Phoenix.Component
   import PhxComponentHelpers
 
   @css_class "inline-flex items-center justify-center p-3 w-5 h-5 border \
               border-transparent text-2xl leading-4 font-medium rounded-md \
               text-white bg-primary hover:bg-primary-hover"
 
-  def update(assigns, socket) do
+  def button(assigns) do
     assigns =
       assigns
       |> extend_class(@css_class)
@@ -98,15 +96,9 @@ defmodule Forms.Button do
         required: ["@click"]
       )
 
-    {:ok, assign(socket, assigns)}
-  end
-
-  def render(assigns) do
-    ~L"""
-    <button type="button"
-      <%= @raw_class %> 
-      <%= @raw_alpine_attributes %> 
-      <%= @raw_phx_attributes%>
+    ~H"""
+    <button type="button" {@heex_class}
+      {@heex_alpine_attributes} {@heex_phx_attributes}
      >
       <%= render_block(@inner_block) %>
     </button>
@@ -118,9 +110,9 @@ end
 Then in your `html.leex` template you can imagine the following code, providing `@click` behaviour and overriding just the few tailwind css classes you need (only `p-*`, `w-*` and `h-*` will be replaced). No `phx` behaviour here, but it's ok, it won't break ;-)
 
 ```elixir
-<%= live_component Button, class: "p-0 w-7 h-7", "@click": "$dispatch('closeslideover')" do %>
-  <%= live_component Icon, icon: :plus_circle %>
-<% end %>
+<.button class="p-0 w-7 h-7" "@click"="$dispatch('closeslideover')">
+  <.icon icon={:plus_circle}/>
+<.button>
 ```
 
 ## Forms
@@ -135,17 +127,17 @@ end
 
 Then you only need to use `PhxComponentHelpers.set_form_attributes/1` within your own form LiveComponents in order to fetch names & values from the form. Your template will then look like this:
 
-```elixir
-<%= f = my_form_for @changeset, "#", phx_submit: "form_submit", class: "divide-none" do %>
-  <%= live_component InputGroup do %>
-    <%= live_component Label, form: f, field: :name, label: "Name" %>
-    <%= live_component TextInput, form: f, field: :name  %>
-  <% end %>
+```heex
+<.my_form_for let={f} for={@changeset} phx_submit="form_submit" class="divide-none">
+  <.input_group>
+    <.label form={f} field={:name} label="Name"/>
+    <.text_input form={f} field={:name}/>
+  </.input_group>
     
-  <%= live_component ButtonGroup, class: "pt-2" do %>
-    <%= live_component Button, type: "submit", label: "Save" %>
-  <% end %>
-<% end %>
+  <.button_group class="pt-2">
+    <.button type="submit" label="Save"/>
+  </.button_group>
+</.my_form_for>
 ```
 
 ## Compared to Surface
