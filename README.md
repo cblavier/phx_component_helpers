@@ -18,7 +18,7 @@ It provides the following features:
 
 ## Motivation
 
-Writing a library of stateless live_components is a great way to improve consistency in both your UI and code and also to get a significant productivity boost. 
+Writing a library of stateless components is a great way to improve consistency in both your UI and code and also to get a significant productivity boost. 
 
 The best components can be used _as-is_ without any further configuration, but are versatile enough to be customized from templates or higher level components.
 
@@ -60,7 +60,7 @@ From templates, it looks like this:
   </.input_group>
     
   <.button_group class="pt-2">
-    <%= live_component Button, type: "submit", phx_click: "btn-click", label: "Save" %>
+    <.button type="submit" phx_click="btn-click" label="Save"/>
   </.button_group>
 
 </.form>
@@ -97,11 +97,9 @@ defmodule Forms.Button do
       )
 
     ~H"""
-    <button type="button" {@heex_class}
-      {@heex_alpine_attributes} {@heex_phx_attributes}
-     >
+    <.button type="button" {@heex_class} {@heex_alpine_attributes} {@heex_phx_attributes}>
       <%= render_block(@inner_block) %>
-    </button>
+    </.button>
     """
   end
 end
@@ -112,20 +110,20 @@ Then in your `html.leex` template you can imagine the following code, providing 
 ```elixir
 <.button class="p-0 w-7 h-7" "@click"="$dispatch('closeslideover')">
   <.icon icon={:plus_circle}/>
-<.button>
+</.button>
 ```
 
 ## Forms
 This library also provides `Phoenix.HTML.Form` related functions so you can easily write your own `my_form_for` function with your css defaults.
 
 ```elixir
-def my_form_for(form_data, action, options) when is_list(options) do
+def my_form_for(options) when is_list(options) do
   new_options = extend_form_class(options, "mt-4 space-y-2")
-  form_for(form_data, action, new_options)
+  Phoenix.LiveView.Helpers.form(options)
 end
 ```
 
-Then you only need to use `PhxComponentHelpers.set_form_attributes/1` within your own form LiveComponents in order to fetch names & values from the form. Your template will then look like this:
+Then you only need to use `PhxComponentHelpers.set_form_attributes/1` within your own form components in order to fetch names & values from the form. Your template will then look like this:
 
 ```heex
 <.my_form_for let={f} for={@changeset} phx_submit="form_submit" class="divide-none">
@@ -142,7 +140,7 @@ Then you only need to use `PhxComponentHelpers.set_form_attributes/1` within you
 
 ## Compared to Surface
 
-[Surface](https://github.com/surface-ui/surface) is a library built on top of Phoenix LiveView and `live_components`. Surface is much more ambitious and complex than `PhxComponentHelpers` (which obviously isn't a framework, just helpers ...).
+[Surface](https://github.com/surface-ui/surface) is a library built on top of Phoenix LiveView. Surface is much more ambitious and complex than `PhxComponentHelpers` (which obviously isn't a framework, just helpers ...).
 
 `Surface` really changes the way you code user interfaces and components (you almost won't be using HTML templates anymore) whereas `PhxComponentHelpers` is just some syntactic sugar to help you use raw `phoenix_live_view`.
 
