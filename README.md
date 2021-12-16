@@ -118,8 +118,9 @@ This library also provides `Phoenix.HTML.Form` related functions so you can easi
 
 ```elixir
 def my_form_for(options) when is_list(options) do
-  new_options = extend_form_class(options, "mt-4 space-y-2")
-  Phoenix.LiveView.Helpers.form(options)
+  options
+  |> extend_form_class("mt-4 space-y-2")
+  |> Phoenix.LiveView.Helpers.form()
 end
 ```
 
