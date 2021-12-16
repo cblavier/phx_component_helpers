@@ -97,9 +97,9 @@ defmodule Forms.Button do
       )
 
     ~H"""
-    <.button type="button" {@heex_class} {@heex_alpine_attributes} {@heex_phx_attributes}>
+    <button type="button" {@heex_class} {@heex_alpine_attributes} {@heex_phx_attributes}>
       <%= render_block(@inner_block) %>
-    </.button>
+    </button>
     """
   end
 end
