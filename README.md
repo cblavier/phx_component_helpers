@@ -6,7 +6,7 @@
 
 ## Presentation
 
-`PhxComponentHelpers` provides helper functions meant to be used within Phoenix LiveView live_components to make your components more configurable and extensible from templates.
+`PhxComponentHelpers` provides helper functions meant to be used within Phoenix LiveView to make your components more configurable and extensible from templates.
 
 It provides the following features:
 
