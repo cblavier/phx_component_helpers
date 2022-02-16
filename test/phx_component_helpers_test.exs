@@ -5,54 +5,47 @@ defmodule PhxComponentHelpersTest do
 
   alias Phoenix.HTML.Form
 
+  defp assigns(input), do: Map.merge(input, %{__changed__: %{}})
+
   describe "set_attributes" do
     test "with unknown attributes it let the assigns unchanged" do
-      assigns = %{foo: "foo", bar: "bar"}
+      assigns = assigns(%{foo: "foo", bar: "bar"})
       new_assigns = Helpers.set_attributes(assigns, [])
       assert new_assigns == assigns
     end
 
     test "with known attributes it set the raw and heex attributes" do
-      assigns = %{foo: "foo", bar: "bar"}
-      new_assigns = Helpers.set_attributes(assigns, [:foo])
+      assigns = assigns(%{foo: "foo", bar: "bar"})
 
-      assert new_assigns ==
-               assigns
-               |> Map.put(:raw_foo, {:safe, "foo=\"foo\""})
-               |> Map.put(:heex_foo, foo: "foo")
+      assert %{
+               heex_foo: [foo: "foo"],
+               raw_foo: {:safe, "foo=\"foo\""}
+             } = Helpers.set_attributes(assigns, [:foo])
     end
 
     test "absent assigns are set as empty attributes" do
-      assigns = %{foo: "foo", bar: "bar"}
+      assigns = assigns(%{foo: "foo", bar: "bar"})
 
       assert %{baz: nil, heex_baz: [], raw_baz: {:safe, ""}} =
                Helpers.set_attributes(assigns, [:baz])
     end
 
     test "with known attributes and json opt, it set the attribute as json" do
-      assigns = %{foo: %{here: "some json"}, bar: "bar"}
+      assigns = assigns(%{foo: %{here: "some json"}, bar: "bar"})
       new_assigns = Helpers.set_attributes(assigns, [:foo], json: true)
 
-      assert new_assigns ==
-               assigns
-               |> Map.put(
-                 :raw_foo,
-                 {:safe, "foo=\"{&quot;here&quot;:&quot;some json&quot;}\""}
-               )
-               |> Map.put(
-                 :heex_foo,
-                 foo: "{\"here\":\"some json\"}"
-               )
+      assert new_assigns[:raw_foo] == {:safe, "foo=\"{&quot;here&quot;:&quot;some json&quot;}\""}
+      assert new_assigns[:heex_foo] == [foo: "{\"here\":\"some json\"}"]
     end
 
     test "validates required attributes" do
-      assigns = %{foo: "foo", bar: "bar"}
+      assigns = assigns(%{foo: "foo", bar: "bar"})
       new_assigns = Helpers.set_attributes(assigns, [], required: [:foo])
       assert new_assigns == assigns
     end
 
     test "with missing required attributes" do
-      assigns = %{foo: "foo", bar: "bar"}
+      assigns = assigns(%{foo: "foo", bar: "bar"})
 
       assert_raise ArgumentError, "missing required attributes [:baz]", fn ->
         Helpers.set_attributes(assigns, [], required: [:baz])
@@ -60,30 +53,28 @@ defmodule PhxComponentHelpersTest do
     end
 
     test "with into option, it merges all in a single assign" do
-      assigns = %{foo: "foo", bar: "bar"}
-      new_assigns = Helpers.set_attributes(assigns, [:foo, :bar], into: :attributes)
+      assigns = assigns(%{foo: "foo", bar: "bar"})
 
-      assert new_assigns ==
-               assigns
-               |> Map.put(:raw_foo, {:safe, "foo=\"foo\""})
-               |> Map.put(:raw_bar, {:safe, "bar=\"bar\""})
-               |> Map.put(:raw_attributes, {:safe, "bar=\"bar\" foo=\"foo\""})
-               |> Map.put(:heex_foo, foo: "foo")
-               |> Map.put(:heex_bar, bar: "bar")
-               |> Map.put(:heex_attributes, bar: "bar", foo: "foo")
+      %{
+        heex_attributes: [bar: "bar", foo: "foo"],
+        heex_bar: [bar: "bar"],
+        heex_foo: [foo: "foo"],
+        raw_attributes: {:safe, "bar=\"bar\" foo=\"foo\""},
+        raw_bar: {:safe, "bar=\"bar\""},
+        raw_foo: {:safe, "foo=\"foo\""}
+      } = Helpers.set_attributes(assigns, [:foo, :bar], into: :attributes)
     end
 
-    test "set default value" do
-      assigns = %{foo: "foo"}
-      new_assigns = Helpers.set_attributes(assigns, [:foo, bar: "bar"])
+    test "set default values" do
+      assigns = assigns(%{foo: "foo"})
 
-      assert new_assigns ==
-               assigns
-               |> Map.put(:bar, "bar")
-               |> Map.put(:raw_foo, {:safe, "foo=\"foo\""})
-               |> Map.put(:raw_bar, {:safe, "bar=\"bar\""})
-               |> Map.put(:heex_foo, foo: "foo")
-               |> Map.put(:heex_bar, bar: "bar")
+      assert %{
+               bar: "bar",
+               heex_bar: [bar: "bar"],
+               heex_foo: [foo: "foo"],
+               raw_bar: {:safe, "bar=\"bar\""},
+               raw_foo: {:safe, "foo=\"foo\""}
+             } = Helpers.set_attributes(assigns, [:foo, bar: "bar"])
     end
 
     test "set default nil value" do
@@ -92,45 +83,32 @@ defmodule PhxComponentHelpersTest do
     end
 
     test "set default json values" do
-      assigns = %{foo: %{here: "some json"}}
+      assigns = assigns(%{foo: %{here: "some json"}})
 
-      new_assigns =
-        Helpers.set_attributes(assigns, [:foo, bar: %{there: "also json"}], json: true)
-
-      assert new_assigns ==
-               assigns
-               |> Map.put(
-                 :bar,
-                 %{there: "also json"}
-               )
-               |> Map.put(
-                 :raw_foo,
-                 {:safe, "foo=\"{&quot;here&quot;:&quot;some json&quot;}\""}
-               )
-               |> Map.put(
-                 :raw_bar,
-                 {:safe, "bar=\"{&quot;there&quot;:&quot;also json&quot;}\""}
-               )
-               |> Map.put(:heex_bar, bar: "{\"there\":\"also json\"}")
-               |> Map.put(:heex_foo, foo: "{\"here\":\"some json\"}")
+      assert %{
+               bar: %{there: "also json"},
+               heex_bar: [bar: "{\"there\":\"also json\"}"],
+               heex_foo: [foo: "{\"here\":\"some json\"}"],
+               raw_bar: {:safe, "bar=\"{&quot;there&quot;:&quot;also json&quot;}\""},
+               raw_foo: {:safe, "foo=\"{&quot;here&quot;:&quot;some json&quot;}\""}
+             } = Helpers.set_attributes(assigns, [:foo, bar: %{there: "also json"}], json: true)
     end
   end
 
   describe "set data attributes" do
     test "with unknown attributes it let the assigns unchanged" do
-      assigns = %{foo: "foo", bar: "bar"}
+      assigns = assigns(%{foo: "foo", bar: "bar"})
       new_assigns = Helpers.set_attributes(assigns, [], data: true)
       assert new_assigns == assigns
     end
 
     test "with known attributes it set the raw attribute" do
-      assigns = %{foo: "foo", bar: "bar"}
-      new_assigns = Helpers.set_attributes(assigns, [:foo], data: true)
+      assigns = assigns(%{foo: "foo", bar: "bar"})
 
-      assert new_assigns ==
-               assigns
-               |> Map.put(:raw_foo, {:safe, "data-foo=\"foo\""})
-               |> Map.put(:heex_foo, "data-foo": "foo")
+      assert %{
+               heex_foo: ["data-foo": "foo"],
+               raw_foo: {:safe, "data-foo=\"foo\""}
+             } = Helpers.set_attributes(assigns, [:foo], data: true)
     end
 
     test "with known attributes and json opt, it set the attribute as json" do
