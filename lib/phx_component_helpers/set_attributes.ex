@@ -18,6 +18,7 @@ defmodule PhxComponentHelpers.SetAttributes do
         case {Map.get(assigns, attr), default} do
           {nil, nil} ->
             acc
+            |> Map.put(attr, nil)
             |> Map.put(raw_attr_key, {:safe, ""})
             |> Map.put(heex_attr_key, [])
 

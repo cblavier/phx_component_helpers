@@ -24,12 +24,9 @@ defmodule PhxComponentHelpersTest do
 
     test "absent assigns are set as empty attributes" do
       assigns = %{foo: "foo", bar: "bar"}
-      new_assigns = Helpers.set_attributes(assigns, [:baz])
 
-      assert new_assigns ==
-               assigns
-               |> Map.put(:raw_baz, {:safe, ""})
-               |> Map.put(:heex_baz, [])
+      assert %{baz: nil, heex_baz: [], raw_baz: {:safe, ""}} =
+               Helpers.set_attributes(assigns, [:baz])
     end
 
     test "with known attributes and json opt, it set the attribute as json" do
@@ -76,7 +73,7 @@ defmodule PhxComponentHelpersTest do
                |> Map.put(:heex_attributes, bar: "bar", foo: "foo")
     end
 
-    test "set default values" do
+    test "set default value" do
       assigns = %{foo: "foo"}
       new_assigns = Helpers.set_attributes(assigns, [:foo, bar: "bar"])
 
@@ -87,6 +84,11 @@ defmodule PhxComponentHelpersTest do
                |> Map.put(:raw_bar, {:safe, "bar=\"bar\""})
                |> Map.put(:heex_foo, foo: "foo")
                |> Map.put(:heex_bar, bar: "bar")
+    end
+
+    test "set default nil value" do
+      assigns = Helpers.set_attributes(%{}, foo: nil)
+      assert %{foo: nil} = assigns
     end
 
     test "set default json values" do
