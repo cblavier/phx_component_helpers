@@ -6,42 +6,40 @@ defmodule PhxComponentHelpers.SetAttributes do
 
   @doc false
   def do_set_attributes(assigns, attributes, opts \\ []) do
-    new_assigns =
-      attributes
-      |> Enum.reduce(%{}, fn attr, acc ->
-        {attr, default} = attribute_key_and_default(attr)
-        raw_attr_key = raw_attribute_key(attr)
-        heex_attr_key = heex_attribute_key(attr)
-        raw_attribute_fun = raw_attribute_fun(opts)
-        heex_attribute_fun = heex_attribute_fun(opts)
+    attributes
+    |> Enum.reduce(assigns, fn attr, acc ->
+      {attr, default} = attribute_key_and_default(attr)
+      raw_attr_key = raw_attribute_key(attr)
+      heex_attr_key = heex_attribute_key(attr)
+      raw_attribute_fun = raw_attribute_fun(opts)
+      heex_attribute_fun = heex_attribute_fun(opts)
 
-        case {Map.get(assigns, attr), default} do
-          {nil, nil} ->
-            acc
-            |> Map.put(raw_attr_key, {:safe, ""})
-            |> Map.put(heex_attr_key, [])
+      case {Map.get(assigns, attr), default} do
+        {nil, nil} ->
+          acc
+          |> assign(attr, nil)
+          |> assign(raw_attr_key, {:safe, ""})
+          |> assign(heex_attr_key, [])
 
-          {nil, default} ->
-            acc
-            |> Map.put(attr, default)
-            |> Map.put(
-              raw_attr_key,
-              {:safe, "#{raw_attribute_fun.(attr)}=#{raw_escaped(default, opts)}"}
-            )
-            |> Map.put(heex_attr_key, [{heex_attribute_fun.(attr), heex_escaped(default, opts)}])
+        {nil, default} ->
+          acc
+          |> assign(attr, default)
+          |> assign(
+            raw_attr_key,
+            {:safe, "#{raw_attribute_fun.(attr)}=#{raw_escaped(default, opts)}"}
+          )
+          |> assign(heex_attr_key, [{heex_attribute_fun.(attr), heex_escaped(default, opts)}])
 
-          {val, _} ->
-            acc
-            |> Map.put(
-              raw_attr_key,
-              {:safe, "#{raw_attribute_fun.(attr)}=#{raw_escaped(val, opts)}"}
-            )
-            |> Map.put(heex_attr_key, [{heex_attribute_fun.(attr), heex_escaped(val, opts)}])
-        end
-      end)
-      |> handle_into_option(opts[:into])
-
-    Map.merge(assigns, new_assigns)
+        {val, _} ->
+          acc
+          |> assign(
+            raw_attr_key,
+            {:safe, "#{raw_attribute_fun.(attr)}=#{raw_escaped(val, opts)}"}
+          )
+          |> assign(heex_attr_key, [{heex_attribute_fun.(attr), heex_escaped(val, opts)}])
+      end
+    end)
+    |> handle_into_option(opts[:into])
   end
 
   @doc false
@@ -127,7 +125,13 @@ defmodule PhxComponentHelpers.SetAttributes do
     heex_attr_key = heex_attribute_key(into)
 
     assigns
-    |> Map.put(raw_attr_key, {:safe, Enum.join(raw_into_assign, " ")})
-    |> Map.put(heex_attr_key, heex_into_assign)
+    |> assign(raw_attr_key, {:safe, Enum.join(raw_into_assign, " ")})
+    |> assign(heex_attr_key, heex_into_assign)
   end
+
+  # support both live view assigns and mere map
+  defp assign(%{__changed__: _changes} = assigns, key, value),
+    do: Phoenix.LiveView.assign(assigns, key, value)
+
+  defp assign(assigns, key, value), do: Map.put(assigns, key, value)
 end
