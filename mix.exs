@@ -36,12 +36,13 @@ defmodule PhxComponentHelpers.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:phoenix_html, ">= 3.0.0"},
-      {:phoenix_live_view, ">= 0.15.0", optional: true},
-      {:jason, "~> 1.0", optional: true},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.24", only: :dev, runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
-      {:ex_doc, "~> 0.24", only: :dev, runtime: false}
+      {:jason, "~> 1.0", optional: true},
+      {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
+      {:phoenix_html, ">= 3.0.0"},
+      {:phoenix_live_view, ">= 0.17.0"}
     ]
   end
 
