@@ -12,15 +12,15 @@
 
 It provides the following features:
 
- * set HTML, data or phx attributes from component assigns
- * set a bunch of attributes at once with any custom prefix such as `@click` or `x-bind:` (for [alpinejs](https://github.com/alpinejs/alpine) users)
- * validate mandatory attributes
- * set and extend CSS classes from component assigns
- * forward a subset of assigns to child components
+- set HTML, data or phx attributes from component assigns
+- set a bunch of attributes at once with any custom prefix such as `@click` or `x-bind:` (for [alpinejs](https://github.com/alpinejs/alpine) users)
+- validate mandatory attributes
+- set and extend CSS classes from component assigns
+- forward a subset of assigns to child components
 
 ## Motivation
 
-Writing a library of stateless components is a great way to improve consistency in both your UI and code and also to get a significant productivity boost. 
+Writing a library of stateless components is a great way to improve consistency in both your UI and code and also to get a significant productivity boost.
 
 The best components can be used _as-is_ without any further configuration, but are versatile enough to be customized from templates or higher level components.
 
@@ -60,7 +60,7 @@ From templates, it looks like this:
     <.label for="name" label="Name"/>
     <.text_input name="name" value={@my.name}/>
   </.input_group>
-    
+
   <.button_group class="pt-2">
     <.button type="submit" phx_click="btn-click" label="Save"/>
   </.button_group>
@@ -116,6 +116,7 @@ Then in your `html.leex` template you can imagine the following code, providing 
 ```
 
 ## Forms
+
 This library also provides `Phoenix.HTML.Form` related functions so you can easily write your own `my_form_for` function with your css defaults.
 
 ```elixir
@@ -134,7 +135,7 @@ Then you only need to use `PhxComponentHelpers.set_form_attributes/1` within you
     <.label form={f} field={:name} label="Name"/>
     <.text_input form={f} field={:name}/>
   </.input_group>
-    
+
   <.button_group class="pt-2">
     <.button type="submit" label="Save"/>
   </.button_group>
@@ -158,9 +159,8 @@ Add the following to your `mix.exs`.
 ```elixir
 def deps do
   [
-    {:phx_component_helpers, "~> 0.12.0"},
+    {:phx_component_helpers, "~> 0.13.0"},
     {:jason, "~> 1.0"} # only required if you want to use json encoding options
   ]
 end
 ```
-
