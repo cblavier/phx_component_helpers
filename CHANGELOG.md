@@ -1,3 +1,7 @@
+# 0.13.1
+
+- fixed an issue of duplicate attributes when combining `set_phx_attributes` with `set_attributes`
+
 # 0.13.0
 
 - using `Phoenix LiveView.assign/2` instead of `Map.put/3`. Big thanks to @thenrio!
