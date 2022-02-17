@@ -93,6 +93,11 @@ defmodule PhxComponentHelpersTest do
                raw_foo: {:safe, "foo=\"{&quot;here&quot;:&quot;some json&quot;}\""}
              } = Helpers.set_attributes(assigns, [:foo, bar: %{there: "also json"}], json: true)
     end
+
+    test "detects assign changes" do
+      assert %{__changed__: %{id: true}} = Helpers.set_attributes(assigns(%{}), id: 1)
+      refute Map.has_key?(Helpers.set_attributes(%{}, id: 1), :__changed__)
+    end
   end
 
   describe "set data attributes" do
@@ -281,6 +286,11 @@ defmodule PhxComponentHelpersTest do
       assert_raise ArgumentError, fn ->
         Helpers.set_phx_attributes(assigns, required: [:phx_click])
       end
+    end
+
+    test "combine" do
+      assert %{heex_phx_attributes: []} =
+               %{} |> Helpers.set_attributes(id: 1) |> Helpers.set_phx_attributes()
     end
   end
 

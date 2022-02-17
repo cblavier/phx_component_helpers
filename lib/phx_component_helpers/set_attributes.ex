@@ -6,40 +6,43 @@ defmodule PhxComponentHelpers.SetAttributes do
 
   @doc false
   def do_set_attributes(assigns, attributes, opts \\ []) do
-    attributes
-    |> Enum.reduce(assigns, fn attr, acc ->
-      {attr, default} = attribute_key_and_default(attr)
-      raw_attr_key = raw_attribute_key(attr)
-      heex_attr_key = heex_attribute_key(attr)
-      raw_attribute_fun = raw_attribute_fun(opts)
-      heex_attribute_fun = heex_attribute_fun(opts)
+    new_assigns =
+      attributes
+      |> Enum.reduce(Map.take(assigns, [:__changed__]), fn attr, acc ->
+        {attr, default} = attribute_key_and_default(attr)
+        raw_attr_key = raw_attribute_key(attr)
+        heex_attr_key = heex_attribute_key(attr)
+        raw_attribute_fun = raw_attribute_fun(opts)
+        heex_attribute_fun = heex_attribute_fun(opts)
 
-      case {Map.get(assigns, attr), default} do
-        {nil, nil} ->
-          acc
-          |> assign(attr, nil)
-          |> assign(raw_attr_key, {:safe, ""})
-          |> assign(heex_attr_key, [])
+        case {Map.get(assigns, attr), default} do
+          {nil, nil} ->
+            acc
+            |> assign(attr, nil)
+            |> assign(raw_attr_key, {:safe, ""})
+            |> assign(heex_attr_key, [])
 
-        {nil, default} ->
-          acc
-          |> assign(attr, default)
-          |> assign(
-            raw_attr_key,
-            {:safe, "#{raw_attribute_fun.(attr)}=#{raw_escaped(default, opts)}"}
-          )
-          |> assign(heex_attr_key, [{heex_attribute_fun.(attr), heex_escaped(default, opts)}])
+          {nil, default} ->
+            acc
+            |> assign(attr, default)
+            |> assign(
+              raw_attr_key,
+              {:safe, "#{raw_attribute_fun.(attr)}=#{raw_escaped(default, opts)}"}
+            )
+            |> assign(heex_attr_key, [{heex_attribute_fun.(attr), heex_escaped(default, opts)}])
 
-        {val, _} ->
-          acc
-          |> assign(
-            raw_attr_key,
-            {:safe, "#{raw_attribute_fun.(attr)}=#{raw_escaped(val, opts)}"}
-          )
-          |> assign(heex_attr_key, [{heex_attribute_fun.(attr), heex_escaped(val, opts)}])
-      end
-    end)
-    |> handle_into_option(opts[:into])
+          {val, _} ->
+            acc
+            |> assign(
+              raw_attr_key,
+              {:safe, "#{raw_attribute_fun.(attr)}=#{raw_escaped(val, opts)}"}
+            )
+            |> assign(heex_attr_key, [{heex_attribute_fun.(attr), heex_escaped(val, opts)}])
+        end
+      end)
+      |> handle_into_option(opts[:into])
+
+    Map.merge(assigns, new_assigns)
   end
 
   @doc false
