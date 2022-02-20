@@ -2,6 +2,7 @@
 
 - removed interpolation of `raw` attributes as HEEX is now the only templating
   engine target by `phx_component_helpers`
+- removed support of `phx_*` attributes in favor of `phx-*` attributes
 
 # 0.13.1
 

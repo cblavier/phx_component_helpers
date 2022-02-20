@@ -7,7 +7,7 @@ defmodule PhxComponentHelpers do
   It provides following features:
 
   * set HTML or data attributes from component assigns
-  * set phx_* attributes from component assigns
+  * set phx-* attributes from component assigns
   * set attributes with any custom prefix such as `@click` or `x-bind:` from [alpinejs](https://github.com/alpinejs/alpine)
   * encode attributes as JSON from an Elixir structure assign
   * validate mandatory attributes
@@ -103,7 +103,7 @@ defmodule PhxComponentHelpers do
   ## Example
   ```
   assigns
-  |> set_phx_attributes(required: [:phx_submit], init: [:phx_change])
+  |> set_phx_attributes(required: [:"phx-submit"], init: [:"phx-change"])
   ```
 
   `assigns` now contains `@heex_phx_change`, `@heex_phx_submit`
@@ -111,7 +111,7 @@ defmodule PhxComponentHelpers do
   """
   def set_phx_attributes(assigns, opts \\ []) do
     opts = Keyword.put_new(opts, :into, :phx_attributes)
-    set_prefixed_attributes(assigns, ["phx_"], opts)
+    set_prefixed_attributes(assigns, ["phx-"], opts)
   end
 
   @doc ~S"""

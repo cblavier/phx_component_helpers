@@ -210,14 +210,14 @@ defmodule PhxComponentHelpersTest do
 
   describe "set_phx_attributes" do
     test "with phx assigns it adds the phx-attribute" do
-      assigns = %{phx_change: "foo", phx_click: "bar", baz: "baz"}
+      assigns = %{:"phx-change" => "foo", :"phx-click" => "bar", baz: "baz"}
       new_assigns = Helpers.set_phx_attributes(assigns)
 
       assert new_assigns ==
                assigns
                |> Map.put(:heex_phx_attributes, "phx-change": "foo", "phx-click": "bar")
-               |> Map.put(:heex_phx_change, "phx-change": "foo")
-               |> Map.put(:heex_phx_click, "phx-click": "bar")
+               |> Map.put(:"heex_phx-change", "phx-change": "foo")
+               |> Map.put(:"heex_phx-click", "phx-click": "bar")
     end
 
     test "with init attributes it adds empty attribute" do
@@ -227,9 +227,9 @@ defmodule PhxComponentHelpersTest do
     end
 
     test "validates required attributes" do
-      assigns = %{phx_click: "click"}
-      new_assigns = Helpers.set_phx_attributes(assigns, required: [:phx_click], into: nil)
-      assert new_assigns == Map.put(assigns, :heex_phx_click, "phx-click": "click")
+      assigns = %{:"phx-click" => "click"}
+      new_assigns = Helpers.set_phx_attributes(assigns, required: [:"phx-click"], into: nil)
+      assert new_assigns == Map.put(assigns, :"heex_phx-click", "phx-click": "click")
     end
 
     test "with missing required attributes" do
