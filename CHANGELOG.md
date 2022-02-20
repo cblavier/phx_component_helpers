@@ -1,3 +1,8 @@
+# 1.0.0
+
+🎉 `phx_component_helpers` is stable for months and complete feature-wise.
+It's ready for 1.0.0 :) 🔥
+
 # 0.14.0
 
 - removed interpolation of `raw` attributes as HEEX is now the only templating

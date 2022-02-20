@@ -4,7 +4,7 @@ defmodule PhxComponentHelpers.MixProject do
   def project do
     [
       app: :phx_component_helpers,
-      version: "0.14.0",
+      version: "1.0.0",
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
