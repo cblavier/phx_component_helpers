@@ -1,3 +1,8 @@
+# 0.14.0
+
+- removed interpolation of `raw` attributes as HEEX is now the only templating
+  engine target by `phx_component_helpers`
+
 # 0.13.1
 
 - fixed an issue of duplicate attributes when combining `set_phx_attributes` with `set_attributes`
