@@ -54,7 +54,7 @@ end
 From templates, it looks like this:
 
 ```heex
-<.form id="form" phx_submit="form_submit" class="divide-none">
+<.form id="form" phx-submit="form_submit" class="divide-none">
 
   <.input_group>
     <.label for="name" label="Name"/>
@@ -62,7 +62,7 @@ From templates, it looks like this:
   </.input_group>
 
   <.button_group class="pt-2">
-    <.button type="submit" phx_click="btn-click" label="Save"/>
+    <.button type="submit" phx-click="btn-click" label="Save"/>
   </.button_group>
 
 </.form>
@@ -130,7 +130,7 @@ end
 Then you only need to use `PhxComponentHelpers.set_form_attributes/1` within your own form components in order to fetch names & values from the form. Your template will then look like this:
 
 ```heex
-<.my_form_for let={f} for={@changeset} phx_submit="form_submit" class="divide-none">
+<.my_form_for let={f} for={@changeset} phx-submit="form_submit" class="divide-none">
   <.input_group>
     <.label form={f} field={:name} label="Name"/>
     <.text_input form={f} field={:name}/>
