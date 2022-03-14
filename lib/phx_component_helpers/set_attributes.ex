@@ -40,7 +40,7 @@ defmodule PhxComponentHelpers.SetAttributes do
     for attr <- attributes, reduce: assigns do
       acc ->
         heex_attr_key = heex_attribute_key(attr)
-        Map.put_new(acc, heex_attr_key, [])
+        assign_new(acc, heex_attr_key, fn -> [] end)
     end
   end
 
@@ -49,6 +49,16 @@ defmodule PhxComponentHelpers.SetAttributes do
     do: Phoenix.LiveView.assign(assigns, key, value)
 
   def assign(assigns, key, value), do: Map.put(assigns, key, value)
+
+  def assign(%{__changed__: _changes} = assigns, keyword_or_map),
+    do: Phoenix.LiveView.assign(assigns, keyword_or_map)
+
+  def assign(assigns, keyword_or_map), do: Map.merge(assigns, keyword_or_map)
+
+  def assign_new(%{__changed__: _changes} = assigns, key, fun),
+    do: Phoenix.LiveView.assign_new(assigns, key, fun)
+
+  def assign_new(assigns, key, fun), do: Map.put_new_lazy(assigns, key, fun)
 
   defp heex_escaped(val, opts) do
     if opts[:json] do

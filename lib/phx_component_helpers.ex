@@ -250,7 +250,7 @@ defmodule PhxComponentHelpers do
     for option <- opts, reduce: %{} do
       acc ->
         assigns = handle_forward_option(assigns, option)
-        Map.merge(acc, assigns)
+        assign(assigns, acc)
     end
   end
 
