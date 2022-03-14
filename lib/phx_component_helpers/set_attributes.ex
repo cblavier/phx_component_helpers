@@ -44,6 +44,12 @@ defmodule PhxComponentHelpers.SetAttributes do
     end
   end
 
+  # support both live view assigns and mere map
+  def assign(%{__changed__: _changes} = assigns, key, value),
+    do: Phoenix.LiveView.assign(assigns, key, value)
+
+  def assign(assigns, key, value), do: Map.put(assigns, key, value)
+
   defp heex_escaped(val, opts) do
     if opts[:json] do
       @json_library.encode!(val)
@@ -82,10 +88,4 @@ defmodule PhxComponentHelpers.SetAttributes do
     heex_attr_key = heex_attribute_key(into)
     assign(assigns, heex_attr_key, heex_into_assign)
   end
-
-  # support both live view assigns and mere map
-  defp assign(%{__changed__: _changes} = assigns, key, value),
-    do: Phoenix.LiveView.assign(assigns, key, value)
-
-  defp assign(assigns, key, value), do: Map.put(assigns, key, value)
 end

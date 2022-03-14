@@ -1,3 +1,7 @@
+# 1.0.1
+
+- fixed a nasty bug where `extend_class/1` was not updating assigns `__changed__` key
+
 # 1.0.0
 
 🎉 `phx_component_helpers` is stable for months and complete feature-wise.

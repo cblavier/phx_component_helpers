@@ -181,8 +181,8 @@ defmodule PhxComponentHelpers do
     new_class = do_css_extend_class(assigns, default_classes, class_attribute_name)
 
     assigns
-    |> Map.put(:"#{class_attribute_name}", new_class)
-    |> Map.put(:"heex_#{class_attribute_name}", class: new_class)
+    |> assign(:"#{class_attribute_name}", new_class)
+    |> assign(:"heex_#{class_attribute_name}", class: new_class)
   end
 
   @doc ~S"""
