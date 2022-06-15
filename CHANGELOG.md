@@ -1,3 +1,8 @@
+# 1.0.2
+
+- @seb3s fixed a bug, that make `validate_required_attributes` not raising with some
+  undefined attributes.
+
 # 1.0.1
 
 - fixed a nasty bug where `extend_class/1` was not updating assigns `__changed__` key
