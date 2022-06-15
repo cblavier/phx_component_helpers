@@ -54,6 +54,12 @@ defmodule PhxComponentHelpersTest do
       end
     end
 
+    test "with required attributes filled with false, it shoud not raise" do
+      assigns = assigns(%{foo: "foo", bar: "bar"})
+
+      Helpers.set_attributes(assigns, [baz: false], required: [:baz])
+    end
+
     test "with into option, it merges all in a single assign" do
       assigns = assigns(%{foo: "foo", bar: "bar"})
 

@@ -1,3 +1,7 @@
+# 1.0.3
+
+- another fix on `validate_required_attributes` not handling well `false` values
+
 # 1.0.2
 
 - @seb3s fixed a bug, that make `validate_required_attributes` not raising with some
