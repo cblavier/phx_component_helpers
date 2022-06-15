@@ -46,6 +46,14 @@ defmodule PhxComponentHelpersTest do
       end
     end
 
+    test "with missing required attributes filled" do
+      assigns = assigns(%{foo: "foo", bar: "bar"})
+
+      assert_raise ArgumentError, "missing required attributes [:baz]", fn ->
+        Helpers.set_attributes(assigns, [:baz], required: [:baz])
+      end
+    end
+
     test "with into option, it merges all in a single assign" do
       assigns = assigns(%{foo: "foo", bar: "bar"})
 

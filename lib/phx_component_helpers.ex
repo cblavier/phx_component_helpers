@@ -128,7 +128,7 @@ defmodule PhxComponentHelpers do
   def validate_required_attributes(assigns, nil), do: assigns
 
   def validate_required_attributes(assigns, required) do
-    missing = for attr <- required, !Map.has_key?(assigns, attr), do: attr
+    missing = for attr <- required, !Map.get(assigns, attr), do: attr
 
     if Enum.any?(missing) do
       raise ArgumentError, "missing required attributes #{inspect(missing)}"
