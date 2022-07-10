@@ -5,6 +5,8 @@ defmodule PhxComponentHelpersTest do
 
   alias Phoenix.HTML.Form
 
+  import ExUnit.CaptureLog
+
   defp assigns(input), do: Map.merge(input, %{__changed__: %{}})
 
   describe "set_attributes" do
@@ -277,16 +279,18 @@ defmodule PhxComponentHelpersTest do
   end
 
   describe "extend_class" do
+    @tag :capture_log
     test "without class keeps the default class attribute" do
       assigns = %{c: "foo", bar: "bar"}
       new_assigns = Helpers.extend_class(assigns, "bg-blue-500 mt-8")
 
       assert new_assigns ==
                assigns
-               |> Map.put(:class, "mt-8 bg-blue-500")
-               |> Map.put(:heex_class, class: "mt-8 bg-blue-500")
+               |> Map.put(:class, "bg-blue-500 mt-8")
+               |> Map.put(:heex_class, class: "bg-blue-500 mt-8")
     end
 
+    @tag :capture_log
     test "with class extends the default class attribute" do
       assigns = %{class: "mt-2"}
       new_assigns = Helpers.extend_class(assigns, "bg-blue-500 mt-8 ")
@@ -298,6 +302,7 @@ defmodule PhxComponentHelpersTest do
                }
     end
 
+    @tag :capture_log
     test "can extend other class attribute" do
       assigns = %{wrapper_class: "mt-2"}
       new_assigns = Helpers.extend_class(assigns, "bg-blue-500 mt-8 ", attribute: :wrapper_class)
@@ -309,6 +314,7 @@ defmodule PhxComponentHelpersTest do
                }
     end
 
+    @tag :capture_log
     test "default classes can be a function" do
       assigns = %{class: "mt-2", active: true}
 
@@ -324,6 +330,7 @@ defmodule PhxComponentHelpersTest do
                |> Map.put(:heex_class, class: "bg-blue-500 mt-2")
     end
 
+    @tag :capture_log
     test "does not extend with error_class when a form field is not faulty" do
       assigns = %{
         class: "mt-2",
@@ -344,6 +351,94 @@ defmodule PhxComponentHelpersTest do
                  :heex_class,
                  class: "bg-blue-500 mt-2"
                )
+    end
+
+    @warning_msg "Prefix based class replacement in extend_class/3 will soon be deprecated."
+    test "without prefix_replace: false produces a warning log message" do
+      {_result, log} =
+        with_log([level: :warning], fn ->
+          Helpers.extend_class(%{class: "mt-2"}, "bg-blue-500 mt-8")
+        end)
+
+      assert log =~ @warning_msg
+
+      {_result, log} =
+        with_log([level: :warning], fn ->
+          Helpers.extend_class(%{class: "mt-2"}, "bg-blue-500 mt-8", prefix_replace: true)
+        end)
+
+      assert log =~ @warning_msg
+    end
+
+    test "with prefix_replace: false does not produce a warning log message" do
+      {_result, log} =
+        with_log([level: :warning], fn ->
+          Helpers.extend_class(%{class: "mt-2"}, "bg-blue-500 mt-8", prefix_replace: false)
+        end)
+
+      refute log =~ @warning_msg
+    end
+
+    test "with prefix_replace: false does not replace existing class" do
+      assigns = %{class: "mt-2"}
+      new_assigns = Helpers.extend_class(assigns, "bg-blue-500 mt-8", prefix_replace: false)
+
+      assert new_assigns ==
+               %{
+                 class: "bg-blue-500 mt-8 mt-2",
+                 heex_class: [class: "bg-blue-500 mt-8 mt-2"]
+               }
+    end
+
+    test "removes classes prefixed by !" do
+      assigns = %{class: "!mt-8 mt-2"}
+      new_assigns = Helpers.extend_class(assigns, "bg-blue-500 mt-8", prefix_replace: false)
+
+      assert new_assigns ==
+               %{
+                 class: "bg-blue-500 mt-2",
+                 heex_class: [class: "bg-blue-500 mt-2"]
+               }
+    end
+
+    test "removes classes prefixed by ! with * patterns" do
+      assigns = %{class: "!border* mt-2"}
+
+      new_assigns =
+        Helpers.extend_class(assigns, "border-2 border-gray-400", prefix_replace: false)
+
+      assert new_assigns ==
+               %{
+                 class: "mt-2",
+                 heex_class: [class: "mt-2"]
+               }
+    end
+
+    @tag :capture_log
+    test "mix prefix based replacement !  * patterns" do
+      assigns = %{class: "!border* mt-2"}
+
+      new_assigns =
+        Helpers.extend_class(assigns, "border-2 border-gray-400 mt-4", prefix_replace: true)
+
+      assert new_assigns ==
+               %{
+                 class: "mt-2",
+                 heex_class: [class: "mt-2"]
+               }
+    end
+
+    test "removes everything with !* " do
+      assigns = %{class: "!* mt-2"}
+
+      new_assigns =
+        Helpers.extend_class(assigns, "border-2 border-gray-400", prefix_replace: false)
+
+      assert new_assigns ==
+               %{
+                 class: "mt-2",
+                 heex_class: [class: "mt-2"]
+               }
     end
   end
 
