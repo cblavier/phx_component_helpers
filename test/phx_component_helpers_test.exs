@@ -421,11 +421,11 @@ defmodule PhxComponentHelpersTest do
     end
 
     @tag :capture_log
-    test "mix prefix based replacement !  * patterns" do
+    test "mix prefix based replacement ! * patterns" do
       assigns = %{class: "!border* mt-2"}
 
       new_assigns =
-        Helpers.extend_class(assigns, "border-2 border-gray-400 mt-4", prefix_replace: true)
+        Helpers.extend_class(assigns, "border border-2 border-gray-400 mt-4", prefix_replace: true)
 
       assert new_assigns ==
                %{
