@@ -138,10 +138,23 @@ defmodule PhxComponentHelpers do
   end
 
   @doc ~S"""
-  Set assigns with class attributes.
+  Provides default css classes and extend them from assigns.
 
   The class attribute will take provided `default_classes` as a default value and will
-  be extended, on a class-by-class basis, by your assigns.
+  extend them, on a class-by-class basis, with your assigns.
+
+  Any CSS class provided in the assigns (by default under the `:class` attribute) will be
+  added to the `default_classes`. You can also remove classes from the `default_classes`
+  by using the `!` prefix.
+  - `"!bg-gray-400 bg-blue-200"` will remove `"bg-gray-400"` from default component classes
+  and replace it with `"bg-blue-200"`
+  - `"!block flex"` will replace `"block"` by `"flex"` layout in your component classes.
+  - `"!border* border-2 border-red-400"` will replace all border classes by
+  `"border-2 border-red-400"`.
+
+  > #### Deprecation notice {: .warning}
+  >
+  > Following behavior will be deprecated from 1.2, no implicit class replacement will be performed.
 
   This function will identify default classes to be replaced by assigns on a prefix basis:
   - "bg-gray-200" will be overwritten by "bg-blue-500" because they share the same "bg-" prefix
@@ -157,6 +170,8 @@ defmodule PhxComponentHelpers do
 
   ## Options
   * `:attribute` - read & write css classes from & into this key
+  * `:prefix_replace` - when set to false, disable the prefix based class replacement.
+    From 1.2, `prefix_replace: false` will be the default.
 
   ## Example
   ```
@@ -171,14 +186,17 @@ defmodule PhxComponentHelpers do
 
   `assigns` now contains `@heex_class` and `@heex_wrapper_class`.
 
-  If your input assigns were `%{class: "mt-2", wrapper_class: "divide-none"}` then:
+  If your input assigns were `%{class: "!mt-8 mt-2", wrapper_class: "!divide* divide-none"}` then:
   * `@heex_class` would contain `"bg-blue-500 mt-2"`
   * `@heex_wrapper_class` would contain `"py-4 px-2 divide-none"`
   """
   def extend_class(assigns, default_classes, opts \\ []) do
     class_attribute_name = Keyword.get(opts, :attribute, :class)
+    prefix_replace = Keyword.get(opts, :prefix_replace, true)
+    warn_for_deprecated_prefix_replace(prefix_replace)
 
-    new_class = do_css_extend_class(assigns, default_classes, class_attribute_name)
+    new_class =
+      do_css_extend_class(assigns, default_classes, class_attribute_name, prefix_replace)
 
     assigns
     |> assign(:"#{class_attribute_name}", new_class)

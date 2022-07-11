@@ -1,3 +1,10 @@
+# 1.1.0
+
+- `extend_class/3` behavior has been updated and will soon no longer replace default css
+  classes based on their prefix (this behavior is still working but deprecated). To switch to
+  the new behavior and suppress warning messages, pass the `prefix_replace: false` option and
+  use the new `!` based syntax to explicitly remove default CSS classes. (ex: `!border-* border-red-500`)
+
 # 1.0.3
 
 - another fix on `validate_required_attributes` not handling well `false` values
@@ -9,7 +16,7 @@
 
 # 1.0.1
 
-- fixed a nasty bug where `extend_class/1` was not updating assigns `__changed__` key
+- fixed a nasty bug where `extend_class/3` was not updating assigns `__changed__` key
 
 # 1.0.0
 
