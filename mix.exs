@@ -38,7 +38,7 @@ defmodule PhxComponentHelpers.MixProject do
     [
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.24", only: :dev, runtime: false},
-      {:excoveralls, "~> 0.10", only: :test},
+      {:excoveralls, "~> 0.14", only: :test},
       {:jason, "~> 1.0", optional: true},
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
       {:phoenix_html, ">= 3.0.0"},

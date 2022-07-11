@@ -22,6 +22,12 @@ defmodule PhxComponentHelpersTest do
       assert %{heex_foo: [foo: "foo"]} = Helpers.set_attributes(assigns, [:foo])
     end
 
+    test "with liveview assigns" do
+      assigns = assigns(%{__changed__: [], foo: "foo", bar: "bar"})
+
+      assert %{heex_foo: [foo: "foo"]} = Helpers.set_attributes(assigns, [:foo])
+    end
+
     test "absent assigns are set as empty attributes" do
       assigns = assigns(%{foo: "foo", bar: "bar"})
 
