@@ -33,26 +33,21 @@ defmodule PhxComponentHelpers.CSS do
 
   defp do_extend_class(assigns_or_options, input_class, default_classes, prefix_replace) do
     default_classes =
-      case default_classes do
-        _ when is_function(default_classes) -> default_classes.(assigns_or_options)
-        _ -> default_classes
-      end
+      if is_function(default_classes),
+        do: default_classes.(assigns_or_options),
+        else: default_classes
 
     default_classes = String.split(default_classes, [" ", "\n"], trim: true)
     extend_classes = String.split(input_class, [" ", "\n"], trim: true)
     target_classes = Enum.reject(extend_classes, &String.starts_with?(&1, "!"))
 
-    classes =
-      for class <- Enum.reverse(default_classes), reduce: target_classes do
-        acc ->
-          if class_should_be_removed?(class, extend_classes, prefix_replace) do
-            acc
-          else
-            [class | acc]
-          end
-      end
-
-    Enum.join(classes, " ")
+    for class <- Enum.reverse(default_classes),
+        !class_should_be_removed?(class, extend_classes, prefix_replace),
+        reduce: target_classes do
+      acc ->
+        [class | acc]
+    end
+    |> Enum.join(" ")
   end
 
   defp class_should_be_removed?(class, extend_classes, prefix_replace) do
@@ -61,12 +56,8 @@ defmodule PhxComponentHelpers.CSS do
         true
 
       "!" <> pattern ->
-        if String.ends_with?(pattern, "*") do
-          pattern = String.slice(pattern, 0..-2)
-          String.starts_with?(class, pattern)
-        else
-          false
-        end
+        String.ends_with?(pattern, "*") and
+          String.starts_with?(class, String.slice(pattern, 0..-2))
 
       extend_class when prefix_replace ->
         [class_prefix | _] = String.split(class, "-")
