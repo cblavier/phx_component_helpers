@@ -107,10 +107,10 @@ defmodule Forms.Button do
 end
 ```
 
-Then in your `html.leex` template you can imagine the following code, providing `@click` behaviour and overriding just the few tailwind css classes you need (only `p-*`, `w-*` and `h-*` will be replaced). No `phx` behaviour here, but it's ok, it won't break ;-)
+Then in your `html.heex` template you can imagine the following code, providing `@click` behaviour and overriding just the few tailwind css classes you need (only `p-*`, `w-*` and `h-*` will be replaced). No `phx` behaviour here, but it's ok, it won't break ;-)
 
 ```elixir
-<.button class="p-0 w-7 h-7" "@click"="$dispatch('closeslideover')">
+<.button class="!p-* p-0 !w-* w-7 !h-* h-7" "@click"="$dispatch('closeslideover')">
   <.icon icon={:plus_circle}/>
 </.button>
 ```
