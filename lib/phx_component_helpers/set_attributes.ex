@@ -46,17 +46,17 @@ defmodule PhxComponentHelpers.SetAttributes do
 
   # support both live view assigns and mere map
   def assign(%{__changed__: _changes} = assigns, key, value),
-    do: Phoenix.LiveView.assign(assigns, key, value)
+    do: Phoenix.Component.assign(assigns, key, value)
 
   def assign(assigns, key, value), do: Map.put(assigns, key, value)
 
   def assign(%{__changed__: _changes} = assigns, keyword_or_map),
-    do: Phoenix.LiveView.assign(assigns, keyword_or_map)
+    do: Phoenix.Component.assign(assigns, keyword_or_map)
 
   def assign(assigns, keyword_or_map), do: Map.merge(assigns, keyword_or_map)
 
   def assign_new(%{__changed__: _changes} = assigns, key, fun),
-    do: Phoenix.LiveView.assign_new(assigns, key, fun)
+    do: Phoenix.Component.assign_new(assigns, key, fun)
 
   def assign_new(assigns, key, fun), do: Map.put_new_lazy(assigns, key, fun)
 

@@ -4,7 +4,7 @@ defmodule PhxComponentHelpers.MixProject do
   def project do
     [
       app: :phx_component_helpers,
-      version: "1.1.0",
+      version: "1.2.0",
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -21,7 +21,8 @@ defmodule PhxComponentHelpers.MixProject do
       source_url: "https://github.com/cblavier/phx_component_helpers",
       docs: [
         main: "PhxComponentHelpers",
-        extras: ["README.md"]
+        extras: ["README.md"],
+        nest_modules_by_prefix: [PhxComponentHelpers]
       ]
     ]
   end
@@ -42,7 +43,7 @@ defmodule PhxComponentHelpers.MixProject do
       {:jason, "~> 1.0", optional: true},
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
       {:phoenix_html, ">= 3.0.0"},
-      {:phoenix_live_view, ">= 0.17.0"}
+      {:phoenix_live_view, ">= 0.18.0"}
     ]
   end
 

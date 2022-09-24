@@ -1,3 +1,7 @@
+# 1.2.0
+
+- switched to LiveView 0.18.0.
+
 # 1.1.0
 
 - `extend_class/3` behavior has been updated and will soon no longer replace default css
