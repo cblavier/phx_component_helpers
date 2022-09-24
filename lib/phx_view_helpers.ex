@@ -19,6 +19,7 @@ defmodule PhxViewHelpers do
     new_options = extend_form_class(options, "mt-4 space-y-2")
     form_for(form_data, action, new_options)
   end
+  ```
   """
   def extend_form_class(options, default_classes) when is_list(options) do
     extended_classes = do_css_extend_class(options, default_classes, :class)
