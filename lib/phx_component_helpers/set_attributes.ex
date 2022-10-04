@@ -11,7 +11,7 @@ defmodule PhxComponentHelpers.SetAttributes do
         heex_attr_key = heex_attribute_key(attr)
         heex_attribute_fun = heex_attribute_fun(opts)
 
-        case {Map.get(assigns, attr), default} do
+        case {get_from_assigns(assigns, attr, opts[:from]), default} do
           {nil, nil} ->
             acc
             |> assign(attr, nil)
@@ -29,6 +29,21 @@ defmodule PhxComponentHelpers.SetAttributes do
       |> handle_into_option(opts[:into])
 
     Map.merge(assigns, new_assigns)
+  end
+
+  defp get_from_assigns(assigns, attr, nil = _from) do
+    Map.get(assigns, attr)
+  end
+
+  defp get_from_assigns(assigns, attr, from) when is_list(from) do
+    from_assigns =
+      for {_key, attrs} <- Map.take(assigns, from), {k, v} <- attrs, into: %{}, do: {k, v}
+
+    Map.get(from_assigns, attr)
+  end
+
+  defp get_from_assigns(assigns, attr, from) do
+    get_from_assigns(assigns, attr, [from])
   end
 
   @doc false

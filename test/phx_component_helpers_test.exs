@@ -100,6 +100,14 @@ defmodule PhxComponentHelpersTest do
              } = Helpers.set_attributes(assigns, [:foo, bar: %{there: "also json"}], json: true)
     end
 
+    test "set from attributes" do
+      assigns = assigns(%{data: [here: "foo", there: "bar"]})
+      assert %{heex_here: [here: "foo"]} = Helpers.set_attributes(assigns, [:here], from: :data)
+
+      assert %{heex_here: [here: "foo"], heex_data: [here: "foo"]} =
+               Helpers.set_attributes(assigns, [:here], from: :data, into: :data)
+    end
+
     test "detects assign changes" do
       assert %{__changed__: %{id: true}} = Helpers.set_attributes(assigns(%{}), id: 1)
       refute Map.has_key?(Helpers.set_attributes(%{}, id: 1), :__changed__)
@@ -225,6 +233,36 @@ defmodule PhxComponentHelpersTest do
         Helpers.set_prefixed_attributes(assigns, ["@click", "x-bind:"], required: ["@click.away"])
       end
     end
+
+    test "with single from attribute" do
+      assigns = %{rest: [foo: "foo", "phx-click": "click", "phx-update": "ignore"]}
+      new_assigns = Helpers.set_prefixed_attributes(assigns, ["phx-"], from: :rest, into: :phx)
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:"heex_phx-click", "phx-click": "click")
+               |> Map.put(:"heex_phx-update", "phx-update": "ignore")
+               |> Map.put(:heex_phx, "phx-click": "click", "phx-update": "ignore")
+    end
+
+    test "with multiple from attribute" do
+      assigns = %{
+        data: [foo: "foo", "data-text": "text"],
+        aria: [bar: "bar", "aria-title": "title"]
+      }
+
+      new_assigns =
+        Helpers.set_prefixed_attributes(assigns, ["data-", "aria-"],
+          from: [:data, :aria],
+          into: :rest
+        )
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:"heex_aria-title", "aria-title": "title")
+               |> Map.put(:"heex_data-text", "data-text": "text")
+               |> Map.put(:heex_rest, "aria-title": "title", "data-text": "text")
+    end
   end
 
   describe "set_phx_attributes" do
@@ -259,9 +297,15 @@ defmodule PhxComponentHelpersTest do
       end
     end
 
-    test "combine" do
-      assert %{heex_phx_attributes: []} =
-               %{} |> Helpers.set_attributes(id: 1) |> Helpers.set_phx_attributes()
+    test "with from attributes" do
+      assigns = %{rest: ["phx-change": "foo", "phx-click": "bar", baz: "baz"]}
+      new_assigns = Helpers.set_phx_attributes(assigns, from: :rest)
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:heex_phx_attributes, "phx-change": "foo", "phx-click": "bar")
+               |> Map.put(:"heex_phx-change", "phx-change": "foo")
+               |> Map.put(:"heex_phx-click", "phx-click": "bar")
     end
   end
 

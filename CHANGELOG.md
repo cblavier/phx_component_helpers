@@ -1,6 +1,8 @@
 # 1.3.0
 
 - CSS prefix based replacement, deprecated in 1.1.0, has been removed.
+- added a new `:from` option on `set_attributes`, `set_prefixed_attributes` and `set_phx_attributes`
+  meant to work with new `:global` component attributes.
 
 # 1.2.0
 

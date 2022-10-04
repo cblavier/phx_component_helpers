@@ -8,7 +8,8 @@ defmodule PhxComponentHelpers do
 
   * set HTML or data attributes from component assigns
   * set phx-* attributes from component assigns
-  * set attributes with any custom prefix such as `@click` or `x-bind:` from [alpinejs](https://github.com/alpinejs/alpine)
+  * set attributes with any custom prefix such as `@click` or `x-bind:` from
+    [alpinejs](https://github.com/alpinejs/alpine)
   * encode attributes as JSON from an Elixir structure assign
   * validate mandatory attributes
   * set and extend CSS classes from component assigns
@@ -18,19 +19,19 @@ defmodule PhxComponentHelpers do
   import Phoenix.HTML.Form, only: [input_id: 2, input_name: 2, input_value: 2]
 
   @doc ~S"""
-  Extends assigns with heex_* attributes that can be interpolated within
-  your component markup.
+  Extends assigns with heex_* attributes that can be interpolated within your component markup.
 
   ## Parameters
     * `assigns` - your component assigns
     * `attributes` - a list of attributes (atoms) that will be fetched from assigns.
-    Attributes can either be single atoms or tuples in the form `{:atom, default}` to
-    provide default values.
+    Attributes can either be single atoms or tuples in the form `{:atom, default}` to provide
+    default values.
 
   ## Options
   * `:required` - raises if required attributes are absent from assigns
   * `:json` - when true, will JSON encode the assign value
   * `:data` - when true, HTML attributes are prefixed with `data-`
+  * `:from` - instead of fetching from all assigns, fetch from one or several :global attributes
   * `:into` - merges all assigns in a single one that can be interpolated at once
 
   ## Example
@@ -68,16 +69,22 @@ defmodule PhxComponentHelpers do
   ## Options
   * `:init` - a list of attributes that will be initialized if absent from assigns
   * `:required` - raises if required attributes are absent from assigns
+  * `:from` - instead of fetching from all assigns, fetch from one or several :global attributes
   * `:into` - merges all assigns in a single one that can be interpolated at once
 
   ## Example
   ```
   assigns
   |> set_prefixed_attributes(
-      ["@click", "x-bind:"],
-      required: ["x-bind:class"],
-      into: :alpine_attributes
-    )
+    ["@click", "x-bind:"],
+    required: ["x-bind:class"],
+    into: :alpine_attributes
+  )
+  |> set_prefixed_attributes(
+    ["aria-"],
+    from: :rest,
+    into: :aria_attributes
+  )
   ```
 
   `assigns` now contains `@heex_click`, `@heex_x-bind:class`
@@ -86,7 +93,7 @@ defmodule PhxComponentHelpers do
   def set_prefixed_attributes(assigns, prefixes, opts \\ []) do
     phx_attributes =
       prefixes
-      |> Enum.flat_map(&find_assigns_with_prefix(assigns, &1))
+      |> Enum.flat_map(&find_assigns_with_prefix(assigns, opts[:from], &1))
       |> Enum.uniq()
 
     assigns
@@ -97,17 +104,19 @@ defmodule PhxComponentHelpers do
 
   @doc ~S"""
   Just a convenient method built on top of `set_prefixed_attributes/3` for phx attributes.
-  It will automatically detect any attribute prefixed by `phx_` from input assigns.
+  It will automatically detect any attribute prefixed by `phx-` from input assigns.
   By default, the `:into` option of `set_prefixed_attributes/3` is `:phx_attributes`
 
   ## Example
   ```
   assigns
   |> set_phx_attributes(required: [:"phx-submit"], init: [:"phx-change"])
+
+  assigns
+  |> set_phx_attributes(from: :rest)
   ```
 
-  `assigns` now contains `@heex_phx_change`, `@heex_phx_submit`
-  and `@heex_phx_attributes`.
+  `assigns` now contains `@heex_phx_change`, `@heex_phx_submit` and `@heex_phx_attributes`.
   """
   def set_phx_attributes(assigns, opts \\ []) do
     opts = Keyword.put_new(opts, :into, :phx_attributes)
@@ -235,7 +244,8 @@ defmodule PhxComponentHelpers do
   * `assigns` - your component assigns
 
   ## Options
-  * `prefix` - will only forward assigns prefixed by the given prefix. Forwarded assign key will no longer have the prefix
+  * `prefix` - will only forward assigns prefixed by the given prefix. Forwarded assign key will no
+     longer have the prefix
   * `take`- is a list of key (without prefix) that will be picked from assigns to be forwarded
   * `merge`- takes a map that will be merged as-is to the output assigns
 
@@ -243,7 +253,9 @@ defmodule PhxComponentHelpers do
 
 
   ## Example
-  Following will forward an assign map containing `%{button_id: 42, button_label: "label", phx_click: "save"}` as `%{id: 42, label: "label", phx_click: "save"}`
+  Following will forward an assign map containing `%{button_id: 42, button_label: "label", phx_click: "save"}`
+  as `%{id: 42, label: "label", phx_click: "save"}`
+
   ```
   forward_assigns(assigns, prefix: :button, take: [:phx_click])
   ```
@@ -279,10 +291,21 @@ defmodule PhxComponentHelpers do
     end)
   end
 
-  defp find_assigns_with_prefix(assigns, prefix) do
+  defp find_assigns_with_prefix(assigns, nil = _from, prefix) do
     for key <- Map.keys(assigns),
         key_s = to_string(key),
         String.starts_with?(key_s, prefix),
         do: key
+  end
+
+  defp find_assigns_with_prefix(assigns, from, prefix) when is_list(from) do
+    from_assigns =
+      for {_key, attrs} <- Map.take(assigns, from), {k, v} <- attrs, into: %{}, do: {k, v}
+
+    find_assigns_with_prefix(from_assigns, nil, prefix)
+  end
+
+  defp find_assigns_with_prefix(assigns, from, prefix) do
+    find_assigns_with_prefix(assigns, [from], prefix)
   end
 end

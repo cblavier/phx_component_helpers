@@ -1,7 +1,7 @@
 defmodule PhxViewHelpers do
   @moduledoc """
-   `PhxComponentHelpers` are helper functions meant to be used within Phoenix
-  your views to facilitate usage of live_components inside templates.
+   `PhxComponentHelpers` are helper functions meant to be used within Phoenix your views to
+   facilitate usage of live_components inside templates.
   """
 
   import PhxComponentHelpers.CSS
@@ -10,8 +10,8 @@ defmodule PhxViewHelpers do
   Extends `Phoenix.HTML.Form.form_for/3` options to merge css class as with
   `PhxComponentHelpers.extend_class/2`.
 
-  It's useful to define your own `form_for` functions with default css classes
-  that still can be overriden from the template.
+  It's useful to define your own `form_for` functions with default css classes that still can be
+  overriden from the template.
 
   ## Example
   ```
