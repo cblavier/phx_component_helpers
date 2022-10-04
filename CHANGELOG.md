@@ -1,3 +1,7 @@
+# 1.3.0
+
+- CSS prefix based replacement, deprecated in 1.1.0, has been removed.
+
 # 1.2.0
 
 - switched to LiveView 0.18.0.

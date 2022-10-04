@@ -152,16 +152,6 @@ defmodule PhxComponentHelpers do
   - `"!border* border-2 border-red-400"` will replace all border classes by
   `"border-2 border-red-400"`.
 
-  > #### Deprecation notice {: .warning}
-  >
-  > Following behavior will be deprecated from 1.2, no implicit class replacement will be performed.
-
-  This function will identify default classes to be replaced by assigns on a prefix basis:
-  - "bg-gray-200" will be overwritten by "bg-blue-500" because they share the same "bg-" prefix
-  - "hover:bg-gray-200" will be overwritten by "hover:bg-blue-500" because they share the same
-  "hover:bg-" prefix
-  - "m-1" would not be overwritten by "mt-1" because they don't share the same prefix ("m-" vs "mt-")
-
   ## Parameters
   * `assigns` - your component assigns
   * `default_classes` - the default classes that will be overridden by your assigns.
@@ -170,8 +160,6 @@ defmodule PhxComponentHelpers do
 
   ## Options
   * `:attribute` - read & write css classes from & into this key
-  * `:prefix_replace` - when set to false, disable the prefix based class replacement.
-    From 1.2, `prefix_replace: false` will be the default.
 
   ## Example
   ```
@@ -192,11 +180,7 @@ defmodule PhxComponentHelpers do
   """
   def extend_class(assigns, default_classes, opts \\ []) do
     class_attribute_name = Keyword.get(opts, :attribute, :class)
-    prefix_replace = Keyword.get(opts, :prefix_replace, true)
-    warn_for_deprecated_prefix_replace(prefix_replace)
-
-    new_class =
-      do_css_extend_class(assigns, default_classes, class_attribute_name, prefix_replace)
+    new_class = do_css_extend_class(assigns, default_classes, class_attribute_name)
 
     assigns
     |> assign(:"#{class_attribute_name}", new_class)
