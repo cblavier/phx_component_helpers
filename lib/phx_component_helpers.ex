@@ -46,7 +46,7 @@ defmodule PhxComponentHelpers do
 
   `assigns` now contains :
   - `@heex_id`, `@heex_name`, `@heex_label` and `@heex_value`.
-  - `@heex_attributes` which holds the values if `:id`, `:name` and `:label`.
+  - `@heex_attributes` which holds the values of `:id`, `:name` and `:label`.
   """
   def set_attributes(assigns, attributes, opts \\ []) do
     assigns
