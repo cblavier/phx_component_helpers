@@ -19,9 +19,18 @@ defmodule PhxComponentHelpers.CSS do
 
   defp do_extend_class(assigns_or_options, input_class, default_classes) do
     default_classes =
-      if is_function(default_classes),
-        do: default_classes.(assigns_or_options),
-        else: default_classes
+      cond do
+        is_function(default_classes) ->
+          default_classes.(assigns_or_options)
+
+        is_list(default_classes) ->
+          default_classes
+          |> Enum.filter(&is_binary/1)
+          |> Enum.join(" ")
+
+        true ->
+          default_classes
+      end
 
     default_classes = String.split(default_classes, [" ", "\n"], trim: true)
     extend_classes = String.split(input_class, [" ", "\n"], trim: true)
