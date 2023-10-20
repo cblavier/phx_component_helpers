@@ -42,7 +42,7 @@ defmodule PhxComponentHelpers.MixProject do
       {:excoveralls, "~> 0.14", only: :test},
       {:jason, "~> 1.0", optional: true},
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
-      {:phoenix_html, ">= 3.0.0"},
+      {:phoenix_html, "~> 3.2.0"},
       {:phoenix_live_view, ">= 0.18.0"}
     ]
   end

@@ -1,33 +1,34 @@
 name: Elixir CI
 
-on:
+on: 
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
 
 jobs:
   build:
     name: Build and test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     env:
       MIX_ENV: test
-      CODECOV_TOKEN: 02497079-7449-406d-bd90-7d1aa6a95c8f
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Set up Elixir
-        uses: actions/setup-elixir@v1
+        uses: erlef/setup-beam@v1
         with:
-          elixir-version: "1.13.0"
-          otp-version: "24.1"
+          otp-version: "26.0.2"
+          elixir-version: "1.15.5-otp-26"
 
       - name: Restore dependencies cache
         uses: actions/cache@v2
         with:
-          path: deps
+          path: |
+            deps
+            _build
           key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
           restore-keys: ${{ runner.os }}-mix-
 
@@ -50,5 +51,5 @@ jobs:
         run: curl -Os https://uploader.codecov.io/latest/linux/codecov && chmod +x codecov
 
       - name: Upload test coverage
-        run: ./codecov -t ${CODECOV_TOKEN}
+        run: ./codecov
         
