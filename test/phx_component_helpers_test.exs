@@ -69,7 +69,7 @@ defmodule PhxComponentHelpersTest do
       assigns = assigns(%{foo: "foo", bar: "bar"})
 
       %{
-        heex_attributes: [bar: "bar", foo: "foo"],
+        heex_attributes: [foo: "foo", bar: "bar"],
         heex_bar: [bar: "bar"],
         heex_foo: [foo: "foo"]
       } = Helpers.set_attributes(assigns, [:foo, :bar], into: :attributes)
@@ -272,7 +272,7 @@ defmodule PhxComponentHelpersTest do
 
       assert new_assigns ==
                assigns
-               |> Map.put(:heex_phx_attributes, "phx-change": "foo", "phx-click": "bar")
+               |> Map.put(:heex_phx_attributes, "phx-click": "bar", "phx-change": "foo")
                |> Map.put(:"heex_phx-change", "phx-change": "foo")
                |> Map.put(:"heex_phx-click", "phx-click": "bar")
     end
@@ -303,7 +303,7 @@ defmodule PhxComponentHelpersTest do
 
       assert new_assigns ==
                assigns
-               |> Map.put(:heex_phx_attributes, "phx-change": "foo", "phx-click": "bar")
+               |> Map.put(:heex_phx_attributes, "phx-click": "bar", "phx-change": "foo")
                |> Map.put(:"heex_phx-change", "phx-change": "foo")
                |> Map.put(:"heex_phx-click", "phx-click": "bar")
     end
