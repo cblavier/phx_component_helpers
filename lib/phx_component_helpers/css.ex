@@ -25,6 +25,7 @@ defmodule PhxComponentHelpers.CSS do
 
         is_list(default_classes) ->
           default_classes
+          |> List.flatten()
           |> Enum.filter(&is_binary/1)
           |> Enum.join(" ")
 

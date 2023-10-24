@@ -382,13 +382,14 @@ defmodule PhxComponentHelpersTest do
           "bg-blue-500 mt-8",
           assigns[:active] == true && "text-green-500",
           nil,
+          ["flex"],
           if(assigns[:circle] == true, do: "rounded-full", else: "rounded-md")
         ])
 
       assert new_assigns ==
                assigns
-               |> Map.put(:class, "bg-blue-500 text-green-500 rounded-md mt-2")
-               |> Map.put(:heex_class, class: "bg-blue-500 text-green-500 rounded-md mt-2")
+               |> Map.put(:class, "bg-blue-500 text-green-500 flex rounded-md mt-2")
+               |> Map.put(:heex_class, class: "bg-blue-500 text-green-500 flex rounded-md mt-2")
     end
 
     test "does not extend with error_class when a form field is not faulty" do
