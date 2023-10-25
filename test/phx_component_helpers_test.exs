@@ -374,6 +374,24 @@ defmodule PhxComponentHelpersTest do
                |> Map.put(:heex_class, class: "bg-blue-500 mt-2")
     end
 
+    test "default class can be a list" do
+      assigns = %{class: "!mt* mt-2", active: true, circle: false}
+
+      new_assigns =
+        Helpers.extend_class(assigns, [
+          "bg-blue-500 mt-8",
+          assigns[:active] == true && "text-green-500",
+          nil,
+          ["flex"],
+          if(assigns[:circle] == true, do: "rounded-full", else: "rounded-md")
+        ])
+
+      assert new_assigns ==
+               assigns
+               |> Map.put(:class, "bg-blue-500 text-green-500 flex rounded-md mt-2")
+               |> Map.put(:heex_class, class: "bg-blue-500 text-green-500 flex rounded-md mt-2")
+    end
+
     test "does not extend with error_class when a form field is not faulty" do
       assigns = %{
         class: "!mt* mt-2",
