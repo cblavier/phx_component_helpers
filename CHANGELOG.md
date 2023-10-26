@@ -1,3 +1,7 @@
+# 1.4.0
+
+- `extend_class/3` can now take default classes as list (contribution by @dsrees 🙏)
+
 # 1.3.0
 
 - CSS prefix based replacement, deprecated in 1.1.0, has been removed.
