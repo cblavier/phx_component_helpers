@@ -53,7 +53,7 @@ defmodule PhxComponentHelpers.CSS do
 
       "!" <> pattern ->
         String.ends_with?(pattern, "*") and
-          String.starts_with?(class, String.slice(pattern, 0..-2))
+          String.starts_with?(class, String.slice(pattern, 0..-2//1))
 
       _ ->
         false
