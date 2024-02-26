@@ -1,3 +1,8 @@
+# 1.4.1
+
+- fixed `String.slice` warning
+- fixed `PhxViewHelpers` documentation
+
 # 1.4.0
 
 - `extend_class/3` can now take default classes as list (contribution by @dsrees 🙏)
