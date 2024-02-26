@@ -471,7 +471,7 @@ defmodule PhxComponentHelpersTest do
     test "with form, field and value, set the form assigns" do
       assigns = %{
         c: "foo",
-        form: %Form{data: %{my_field: "42"}, impl: Phoenix.HTML.FormData},
+        form: %Form{source: %{}, data: %{my_field: "42"}, impl: Phoenix.HTML.FormData},
         field: :my_field
       }
 
@@ -489,7 +489,7 @@ defmodule PhxComponentHelpersTest do
     test "with form, field and without value, set the form assigns" do
       assigns = %{
         c: "foo",
-        form: %Form{data: %{}, impl: Phoenix.HTML.FormData},
+        form: %Form{source: %{}, data: %{}, impl: Phoenix.HTML.FormData},
         field: :my_field
       }
 
@@ -509,7 +509,7 @@ defmodule PhxComponentHelpersTest do
         c: "foo",
         for: "already_set",
         id: nil,
-        form: %Form{data: %{}, impl: Phoenix.HTML.FormData},
+        form: %Form{source: %{}, data: %{}, impl: Phoenix.HTML.FormData},
         field: :my_field
       }
 
