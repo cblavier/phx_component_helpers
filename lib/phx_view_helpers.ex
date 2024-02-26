@@ -7,17 +7,17 @@ defmodule PhxViewHelpers do
   import PhxComponentHelpers.CSS
 
   @doc ~S"""
-  Extends `Phoenix.HTML.Form.form_for/3` options to merge css class as with
+  Extends `Phoenix.Component.form/1` options to merge css class as with
   `PhxComponentHelpers.extend_class/2`.
 
-  It's useful to define your own `form_for` functions with default css classes that still can be
+  It's useful to define your own `my_form` function with default css classes that still can be
   overriden from the template.
 
   ## Example
   ```
-  def my_form_for(form_data, action, options) when is_list(options) do
+  def my_form(options) do
     new_options = extend_form_class(options, "mt-4 space-y-2")
-    form_for(form_data, action, new_options)
+    Component.form(new_options)
   end
   ```
   """
