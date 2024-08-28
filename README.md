@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/cblavier/phx_component_helpers/branch/main/graph/badge.svg)](https://codecov.io/gh/cblavier/phx_component_helpers)
 [![Hex pm](http://img.shields.io/hexpm/v/phx_component_helpers.svg?style=flat)](https://hex.pm/packages/phx_component_helpers)
 
-👉 [Demonstration & Code samples](https://phx-component-helpers-demo.onrender.com)
+👉 [Demonstration & Code samples](https://phx-component-helpers.onrender.com)
 
 ## Presentation
 
@@ -28,7 +28,7 @@ Writing such components is not difficult, but involves a lot of boilerplate code
 
 ## Example
 
-A lot of code samples are available [on this site](https://phx-component-helpers-demo.onrender.com), but basically `PhxComponentHelpers` allows you to write components as such:
+A lot of code samples are available [on this site](https://phx-component-helpers.onrender.com), but basically `PhxComponentHelpers` allows you to write components as such:
 
 ```elixir
 defmodule Forms.Button do
